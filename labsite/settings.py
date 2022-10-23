@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8siyugti*c!c0a%=1rfxl9+*3@)elbg-nfwd%x_n0&7^$z*&_r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'polls.apps.PollsConfig',
+    'registration.apps.RegistartionConfig',
 
 ]
 
@@ -119,8 +120,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    'labsite/static',
+]
+
+STATIC_ROOT = BASE_DIR.joinpath("static")
+
+MEDIA_ROOT = BASE_DIR.joinpath("media")
+MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
