@@ -64,5 +64,3 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
-def pageNotFound(response, exception):
-    return HttpResponseNotFound('<h1> Страница не найдена </h1>')

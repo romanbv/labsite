@@ -3,7 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Labbs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Labbs - сервис стоматологических заказов</title>
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-grid.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-reboot.css' %}" rel="stylesheet">
@@ -13,7 +14,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/scripts.js' %}"></script>
 </head>
-<body>
+<body >
     {% include 'blocks/navbar.html' %}
     {% block content %}
     {% endblock %}

@@ -17,15 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from . import views
-from polls.views import *
-from .views import HomeView
+
+from .views import *
+
 
 
 urlpatterns = [
     path('', HomeView.as_view(), name="home"),
     path('admin/', admin.site.urls),
-    path('polls/',include('polls.urls'))
+    path('polls/', include('polls.urls')),
+    path('account/', include('account.urls')),
 ]
 
 handler404 = pageNotFound
