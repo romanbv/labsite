@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -44,10 +45,17 @@ class LoginUser(LoginView):
     form_class = LoginForm
     template_name = 'account/login.html'
 
-    def get_success_url(self):
-        return reverse_lazy('home')
+    # def get_success_url(self):
+    #     return reverse_lazy('home')
 
 
 def logout_user(request):
     logout(request)
     return redirect('account:login')
+
+@login_required
+def profile_view(request):
+    return render(request, 'account/profile.html')
+
+def password_change_view(request):
+    return render(request, 'account/profile.html')

@@ -27,6 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
     path('account/', include('account.urls')),
+
 ]
 
 handler404 = pageNotFound

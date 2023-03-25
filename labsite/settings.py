@@ -138,4 +138,4 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#LOGIN_REDIRECT_URL = 'profile.html'
+LOGIN_REDIRECT_URL = 'account:profile'
