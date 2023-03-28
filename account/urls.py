@@ -11,6 +11,7 @@ urlpatterns = [
     path('register/', RegisterUser.as_view(), name='register'),
     path('password_change/', password_change_view, name='password_change'),
     path('profile/', profile_view, name='profile'),
+    path('api/users/', GetUserInfoView.as_view()),
     #path('', include('django.contrib.auth.urls')),
     #path('profile', views.user_login),
 

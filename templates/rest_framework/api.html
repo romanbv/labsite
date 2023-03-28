@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container content">
+        <div class="text-center">
+       <caption>Зарегистрированные пользователи </caption>
+            <table border="1px">
+
+
+            <tr>
+              <th>id</th>
+              <th>Name</th>
+
+            </tr>
+            {% for user in data %}
+
+                <tr>
+                  <td>{{ forloop.id }}</td>
+                  <td>{{ capital.username }}</td>
+
+                </tr>
+            {% endfor %}
+         </table>
+        </div>
+    </div>
+{% endblock %}

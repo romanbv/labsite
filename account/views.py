@@ -6,6 +6,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
+#API
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .serializers import UserSerializer
+#from django.contrib.auth.models import User
+
 from .forms import *
 
 
@@ -59,3 +65,15 @@ def profile_view(request):
 
 def password_change_view(request):
     return render(request, 'account/profile.html')
+
+
+class GetUserInfoView(APIView):
+    def get(self, request):
+        # Извлекаем набор всех записей из таблицы Capital
+        queryset = User.objects.all()
+        # Создаём сериалайзер для извлечённого наборa записей
+        serializer_for_queryset = UserSerializer(
+            instance=queryset,  # Передаём набор записей
+            many=True  # На вход подается именно набор, а не одна запись
+        )
+        return Response(serializer_for_queryset.data)
