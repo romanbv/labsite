@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+   <div class="container justify-content-center">
+   <h2>Заказ №{{order.number }}</h2>
+        <div class="container">
+            <ul>
+                <li> Дата: {{order.date }}</li>
+                <li> Компания: {{order.company }}</li>
+                <li> Пользователь  {{order.user}}</li>
+
+            </ul>
+         </div>
+   </div>
+{% endblock %}

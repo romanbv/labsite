@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-   <div class="container mt-5 d-flex justify-content-center">
-   <h1>Заказы</h1>
+   <div class="container justify-content-center">
+   <h1>Заказы: {{request.user}}</h1>
+         <div class="container">
+            <ul>
+               {% for o in orders %}
+               <li>
+                  <a href ="{{o.get_absolute_url}}"> Заказ №{{o.number }}</a>
+                  <p> Дата: {{o.date }}</p>
+                  <p> Компания: {{o.company }}</p>
+               </li>
+               {% endfor%}
+            </ul>
+         </div>
    </div>
 {% endblock %}

@@ -5,6 +5,6 @@ from django.shortcuts import render
 
 
 def company_view(request):
-    return render(request, 'companies\company.html')
+    return render(request, 'companies/company.html')
 
 
