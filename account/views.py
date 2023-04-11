@@ -10,6 +10,8 @@ from django.views.generic import CreateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserSerializer
+from companies.models import Company
+
 #from django.contrib.auth.models import User
 
 from .forms import *
@@ -61,7 +63,8 @@ def logout_user(request):
 
 @login_required
 def profile_view(request):
-    return render(request, 'account/profile.html')
+    UserCompanies = Company.objects.filter(owner=request.user.id)
+    return render(request, 'account/profile.html', {'companies':UserCompanies})
 
 def password_change_view(request):
     return render(request, 'account/profile.html')

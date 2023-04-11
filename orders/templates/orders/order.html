@@ -5,7 +5,7 @@
    <h2>Заказ №{{order.number }}</h2>
         <div class="container">
             <ul>
-                <li> Дата: {{order.date }}</li>
+                <li> Дата: {{order.date|date:"d.m.Y"}}</li>
                 <li> Компания: {{order.company }}</li>
                 <li> Пользователь  {{order.user}}</li>
 

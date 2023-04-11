@@ -2,6 +2,19 @@
 {% load static %}
 {% block content %}
    <div class="container mt-5 d-flex justify-content-center">
-   <h1>Компания</h1>
+   <h2>Компания</h2>
+
+      <div class="container justify-content-center">
+
+        <div class="container">
+            <ul>
+
+                <li> Компания: {{company}}</li>
+                <li> Тип:  {{company.type}}</li>
+                <li> Владелец:  {{company.owner}}</li>
+                <li> Город:  {{company.city}}</li>
+            </ul>
+         </div>
+   </div>
    </div>
 {% endblock %}

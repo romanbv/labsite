@@ -9,6 +9,9 @@
         <li class="nav-item">
           <a class="nav-link disabled" aria-current="page" href="/polls/">Опросы</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link  aria-current="page" href="/admin">Админка</a>
+        </li>
       </ul>
       <ul class="navbar-nav">
        {% if request.user.is_authenticated %}
@@ -19,7 +22,7 @@
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'account:profile' %}">Профиль</a></li>
             <li><a class="dropdown-item" href="{% url 'orders:orders' %}">Заказы</a></li>
-            <li><a class="dropdown-item" href="{% url 'companies:company' %}">Компания</a></li>
+            <li><a class="dropdown-item disables" href="">Компания</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'account:logout' %}">Выйти</a></li>
           </ul>

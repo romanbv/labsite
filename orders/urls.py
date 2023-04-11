@@ -7,7 +7,8 @@ app_name = 'orders'
 urlpatterns = [
     # post views
     path('', orders_view, name='orders'),
-    path('<int:order_num>', order_view, name='order'),
+    path('<slug:order_num>', order_view, name='order'),
+    path('addorder', addorder, name='addorder'),
 
 
 ]

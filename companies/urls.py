@@ -6,7 +6,8 @@ app_name = 'companies'
 
 urlpatterns = [
     # post views
-    path('', company_view, name='company'),
+    path('<int:company_id>', company_view, name='company'),
+
 
 
 ]

@@ -1,10 +1,13 @@
 from django.shortcuts import render
+from .models import Company
+
 
 # Create your views here.
-from django.shortcuts import render
 
 
-def company_view(request):
-    return render(request, 'companies/company.html')
+
+def company_view(request, company_id):
+    company = Company.objects.get(pk=company_id)
+    return render(request, 'companies/company.html', {'company':company})
 
 

@@ -7,12 +7,16 @@
             <ul>
                {% for o in orders %}
                <li>
-                  <a href ="{{o.get_absolute_url}}"> Заказ №{{o.number }}</a>
-                  <p> Дата: {{o.date }}</p>
-                  <p> Компания: {{o.company }}</p>
+                   <p> <a href ="{{o.get_absolute_url}}"> Заказ {{o.pk }} </a> от {{o.date|date:"d.m.Y"}} </p>
+                   <p>Компания: {{o.company }}</p>
+                   <p>Номер: {{o.number }}</p>
+                   <p>UID: {{o.UID }}</p>
                </li>
                {% endfor%}
             </ul>
+            <div class="button mt-2 d-flex flex-row align-items-center">
+                <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'orders:addorder' %}'">Создать заказ</button>
+            </div>
          </div>
    </div>
 {% endblock %}

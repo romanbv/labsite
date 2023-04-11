@@ -1,5 +1,11 @@
 from django.contrib import admin
+from .models import *
 
 
-from .models import Order
-admin.site.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'UID', 'company', 'number', 'user', 'date', 'date_update')
+    list_display_links = ('id', )
+    search_fields = ('id', 'number')
+
+
+admin.site.register(Order, OrderAdmin)

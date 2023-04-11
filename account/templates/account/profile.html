@@ -56,8 +56,26 @@
 
                     </div>
 
+                    <h4>Компании: {{request.user}}</h4>
+                    <ul>
+                        {% for company in companies %}
+                        <li>
+                            <p> <a href ="{{company.get_absolute_url}}"> Компания {{company}} </a> </p>
+
+                        </li>
+                       {% endfor%}
+                    </ul>
+                    <div class="button mt-2 d-flex flex-row align-items-center">
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='' %}'">Создать компанию</button>
+                    </div>
+
                 </div>
 
-             </div>
+   </div>
 
+<div class="container justify-content-center">
+    <div class="container">
+
+         </div>
+   </div>
 {% endblock %}

@@ -13,9 +13,9 @@ COMPANY_TYPE_CHOICES = [
 
 
 class Order(models.Model):
-    UID = models.CharField(verbose_name='UID',db_index=True, max_length=64)
-    company = models.ForeignKey(Company, verbose_name='Компания', on_delete=models.CASCADE)
-    number = models.IntegerField(verbose_name="Номер")
+    UID = models.CharField(verbose_name='UID',db_index=True, max_length=64, null=True)
+    company = models.ForeignKey(Company, verbose_name='Компания',  on_delete=models.CASCADE)
+    number = models.CharField(max_length= 9, verbose_name="Номер")
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
     date = models.DateTimeField (auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
@@ -27,3 +27,7 @@ class Order(models.Model):
 
     def get_absolute_url(self):
         return reverse('orders:order', kwargs={'order_num': self.number})
+
+    class Meta():
+        verbose_name = "Заказы"
+        verbose_name_plural = "Заказы"
