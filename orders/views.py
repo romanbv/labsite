@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+
 
 from .forms import *
 from .models import *
@@ -9,10 +10,10 @@ def orders_view(request):
     return render(request, 'orders/orders.html', {'orders':UserOrders})
 
 def order_view(request, order_num ):
-    UserOrder = Order.objects.get(number = order_num)
+    UserOrder = get_object_or_404(Order, number = order_num)
     return render(request, 'orders/order.html', {'order':UserOrder})
 
-def addorder(request):
+def add_order(request):
     if request.method == "POST":
         form = addOrderForm( request.POST)
         if form.is_valid():

@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
@@ -11,6 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserSerializer
 from companies.models import Company
+from orders.models import Order
 
 #from django.contrib.auth.models import User
 
@@ -62,9 +64,11 @@ def logout_user(request):
     return redirect('account:login')
 
 @login_required
-def profile_view(request):
-    UserCompanies = Company.objects.filter(owner=request.user.id)
-    return render(request, 'account/profile.html', {'companies':UserCompanies})
+def profile_view(request, user_id):
+    UserCompanies   = Company.objects.filter(owner=user_id)
+    UserOrders      = Order.objects.filter(user=user_id)
+    user_profile    = User.objects.get(pk= user_id)
+    return render(request, 'account/profile.html', {'companies':UserCompanies, 'orders':UserOrders, 'user':user_profile})
 
 def password_change_view(request):
     return render(request, 'account/profile.html')

@@ -142,3 +142,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
+
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: "/account/%s" % u.pk,
+}

@@ -11,8 +11,20 @@
 
                 <li> Компания: {{company}}</li>
                 <li> Тип:  {{company.type}}</li>
-                <li> Владелец:  {{company.owner}}</li>
+                <li> Владелец:  <a href ="{{company.owner.get_absolute_url}}">{{company.owner}}</a></li>
                 <li> Город:  {{company.city}}</li>
+            </ul>
+
+            <h4>Заказы</h4>
+            <ul>
+                 {% for o in orders %}
+                   <li>
+                       <p> <a href ="{{o.get_absolute_url}}"> Заказ {{o.pk }} </a> от {{o.date|date:"d.m.Y"}} </p>
+                       <p> <a href ="{{o.company.get_absolute_url}}">Компания: {{o.company }}</a></p>
+                       <p>Номер: {{o.number }}</p>
+                       <p>UID: {{o.UID }}</p>
+                   </li>
+                 {% endfor%}
             </ul>
          </div>
    </div>

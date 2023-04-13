@@ -6,8 +6,8 @@
         <div class="container">
             <ul>
                 <li> Дата: {{order.date|date:"d.m.Y"}}</li>
-                <li> Компания: {{order.company }}</li>
-                <li> Пользователь  {{order.user}}</li>
+                <li> Компания:  <a href ="{{order.company.get_absolute_url }}">{{order.company}}</a></li>
+                <li> Пользователь: <a href ="{{order.user.get_absolute_url}}">{{order.user}}</a></li>
 
             </ul>
          </div>
