@@ -4,7 +4,7 @@
    <div class="container justify-content-center">
    <h2>{{title }}</h2>
         <div class="container">
-            <form action="{% url 'orders:addorder' %}" method="post">
+            <form action="{% url 'orders:add_order' %}" method="post">
                 {% csrf_token %}
                 <div class="form-row">
 

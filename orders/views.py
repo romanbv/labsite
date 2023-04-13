@@ -19,10 +19,10 @@ def add_order(request):
         if form.is_valid():
             try:
                 form.save()
-                return redirect('home')
+                return redirect('account:profile', user_id=request.user.pk)
             except:
                 form.add_error(None,'Ошибка создания заказа')
     else:
         form = addOrderForm()
 
-    return render(request, 'orders/addorder.html', {'form':form, 'title':'Добавление заказа'})
+    return render(request, 'orders/add_order.html', {'form':form, 'title':'Добавление заказа'})

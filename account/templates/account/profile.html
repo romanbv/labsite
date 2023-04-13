@@ -66,7 +66,7 @@
                        {% endfor%}
                     </ul>
                     <div class="button mt-2 d-flex flex-row align-items-center">
-                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='' %}'">Создать компанию</button>
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'companies:add_company' %}'">Создать компанию</button>
                     </div>
 
                     <h4>Заказы</h4>
@@ -81,7 +81,7 @@
                          {% endfor%}
                     </ul>
                     <div class="button mt-2 d-flex flex-row align-items-center">
-                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'orders:addorder' %}'">Создать заказ</button>
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'orders:add_order' %}'">Создать заказ</button>
                     </div>
 
                 </div>
