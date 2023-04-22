@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ClearableFileInput
 
 from .models import *
 
@@ -14,7 +15,14 @@ class addOrderForm(forms.ModelForm):
 
         }
 
-
+class OrderFileModelForm(forms.ModelForm):
+    class Meta:
+        model = OrderFile
+        fields = ['file']
+        widgets = {
+            'file': ClearableFileInput(attrs={'multiple': True}),
+            }
+            # widget is important to upload multiple files
     #number = forms.CharField(max_length=9, label='Номер')
     #company = forms.ModelChoiceField(queryset=Company.objects.all(),  label='Компания')
 

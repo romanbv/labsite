@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
@@ -6,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-
+import yadisk
 #API
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -62,6 +65,24 @@ class LoginUser(LoginView):
 def logout_user(request):
     logout(request)
     return redirect('account:login')
+
+def check_token(request):
+
+    try:
+        y = yadisk.YaDisk('4bf5384cd0904299a07adcb616cc0e08', 'cc9a5b4b894e40649b8e2bd8be5aad5f',
+                          'y0_AgAAAAALE7y3AAm3GAAAAADhGLoR90SrSie4Q7Sh8hEJ6f29c5MBG9E')
+        if not y.exists('/test_dir'):
+            y.mkdir('/test_dir')
+        file_ = open(os.path.join(settings.MEDIA_ROOT, '/uploads/test_file.txt'))
+        y.upload(file_, '/test_dir/testfile.txt')
+        check_result = 'Загружен файл'
+    except:
+        check_result = 'Ошибка загрузки'
+
+
+
+
+    return render(request, 'account/profile.html', {'check_result':check_result})
 
 @login_required
 def profile_view(request, user_id):

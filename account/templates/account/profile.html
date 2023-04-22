@@ -46,6 +46,8 @@
                        <div class="button mt-2 d-flex flex-row align-items-center">
                         <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href=''">Сменить пароль</button>
                         <button class="btn btn-sm btn-primary w-100 ml-2" onclick="location.href='{% url 'account:logout' %}?next=/web/profile'">Выйти</button>
+                        <button class="btn btn-sm btn-primary w-100 ml-2" onclick="location.href='{% url 'account:check_token' %}'">Проверить загрузку</button>
+                        <div> {{check_result}}</div>
 
 
                        </div>
