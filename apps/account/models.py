@@ -18,30 +18,24 @@ PROFILE_TYPE_CHOICES = [
 
 ]
 
-
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name=u"Пользователь")
     avatar = models.FileField(verbose_name=u"Аватар", null=True, blank=True)
     bio = models.TextField(max_length=500, blank=True, null=True, verbose_name=u"О себе")
     city = models.CharField(max_length=30, blank=True, null=True, verbose_name=u"Город")
+    phone_number = models.CharField(max_length=12, blank=True, null=True, verbose_name=u"Телефон")
     birth_date = models.DateField(null=True, blank=True, verbose_name=u"Дата рождения")
     gender = models.CharField(max_length=10, verbose_name=u"Пол", choices=GENDER_CHOICES, default="none")
+    profile_image = models.ImageField(default='default-avatar.png', upload_to='users/', null=True, blank=True)
     profile_type = models.CharField(max_length=20, verbose_name=u"Тип профиля", choices=PROFILE_TYPE_CHOICES, default="none")
 
     def __str__(self):
-        return('Profile: {name}'.format(
-            name = self.user,
+        return '%s %s' % (self.user.first_name, self.user.last_name)
 
-        ))
-
-# Signals
-# @receiver(post_save, sender = User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user = instance)
-#
-# @receiver(post_save, sender = User)
-# def save_user_profile(sender, instance, created, **kwargs):
-#     instance.profile.save()
+@receiver(post_save, sender = User)
+def create_user_profile(sender, instance, created, **kwargs):
+     if created:
+         Profile.objects.create(user = instance)
+@receiver(post_save, sender = User)
+def save_user_profile(sender, instance, created, **kwargs):
+     instance.profile.save()

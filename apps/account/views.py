@@ -22,11 +22,6 @@ from apps.orders.models import Order
 from .forms import *
 
 
-class HomeView(TemplateView):
-    template_name = "home.html"
-
-def pageNotFound(response, exception):
-    return HttpResponseNotFound('<h1> Страница не найдена </h1>')
 
 def user_login(request):
     if request.method == 'POST':
@@ -84,8 +79,6 @@ def check_token(request):
         check_result = 'Загружен файл'
     except:
         check_result = 'Ошибка загрузки'
-
-
 
 
     return render(request, 'account/profile.html', {'check_result':check_result})
