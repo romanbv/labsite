@@ -6,7 +6,7 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+            <h1 class="h3 mb-0 text-gray-800">Инструменты</h1>
         </div>          
 
         <!-- Main Content Here -->
@@ -18,8 +18,11 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Companies</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Компании</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">4,083</div>
+                      <div class="button mt-2 d-flex flex-row align-items-center">
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'companies:add_company' %}'">Создать компанию</button>
+                    </div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-home fa-2x text-gray-300"></i>
@@ -35,8 +38,11 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Contacts</div>
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Заказы</div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">18,002</div>
+                       <div class="button mt-2 d-flex flex-row align-items-center">
+                         <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'orders:add_order' %}'">Создать заказ</button>
+                       </div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-comments fa-2x text-gray-300"></i>

@@ -9,7 +9,7 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-        <h1 class="h3 mb-0 text-gray-800">Profile</h1>
+        <h1 class="h3 mb-0 text-gray-800">Профиль</h1>
         </div>          
 
         <!-- Main Content Here -->
@@ -21,12 +21,12 @@
           <div class="card o-hidden border-0 shadow-lg my-5 col-lg-5">
             <div class="card-body">
                 <h2>{{user.first_name}} {{user.last_name}}</h2>
-                <p><strong>Email: </strong> {{user.username}} </p>
+                <p><strong>Логин: </strong> {{user.username}} </p>
                 <p><strong>Email: </strong> {{user.email}} </p>
-                <p><strong>Bio: </strong> {{user.profile.bio}} </p>
-                <p><strong>Phone Number: </strong> {{user.profile.phone_number}} </p>
-                <p><strong>DOB: </strong> {{user.profile.birth_date}} </p>
-                <a href="{% url 'profile-update' %}" class="btn btn-sm btn-primary shadow-sm">Update Profile</a>
+                <p><strong>ФИО: </strong> {{user.profile.bio}} </p>
+                <p><strong>Телефон: </strong> {{user.profile.phone_number}} </p>
+                <p><strong>Дата рождения: </strong> {{user.profile.birth_date}} </p>
+                <a href="{% url 'profile-update' %}" class="btn btn-sm btn-primary shadow-sm">Обновить профиль</a>
             </div>
           </div>
         </div>

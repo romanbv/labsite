@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Labbs - сервис стоматологических заказов</title>
+    <title>Labbs - сервис заказов</title>
 
 
     <!-- Custom styles for this template-->
@@ -29,13 +29,13 @@
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-address-card"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Contact <sup>Management</sup></div>
+        <div class="sidebar-brand-text mx-3">Доска <sup>управления</sup></div>
       </a>
 
       <!-- Divider -->
       <hr class="sidebar-divider">
 
-      <p class="text-center text-white font-weight-bold">Welcome {{user.first_name}} {{user.last_name}}!</p>
+      <p class="text-center text-white font-weight-bold">Привет, {{user.first_name}} {{user.last_name}}!</p>
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
@@ -44,25 +44,45 @@
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'dashboard' %}">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>Dashboard</span></a>
+          <span>Инструменты</span></a>
       </li>
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
-      <!-- Nav Item - Companies -->
+      <!-- Nav Item - Заказы -->
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{% url 'orders:orders' %}">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>Companies</span></a>
+          <span>Заказы</span></a>
       </li>
-
-      <!-- Nav Item - Contact -->
+        <!-- Nav Item - Файлы -->
       <li class="nav-item">
         <a class="nav-link" href="#">
           <i class="fas fa-fw fa-table"></i>
-          <span>Contact</span></a>
+          <span>Файлы</span></a>
       </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+
+      <!-- Nav Item - Компании -->
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Компании</span></a>
+      </li>
+       <!-- Nav Item - Контрагенты -->
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Контрагенты</span></a>
+      </li>
+
+
+
+
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
@@ -71,21 +91,21 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'profile' %}">
           <i class="fas fa-fw fa-user"></i>
-          <span>Profile</span></a>
+          <span>Профиль</span></a>
       </li>
 
       <!-- Nav Item - Change Password -->
       <li class="nav-item">
         <a class="nav-link" href="{% url 'change-password' %}">
           <i class="fas fa-fw fa-key"></i>
-          <span>Change Password</span></a>
+          <span>Изменить пароль</span></a>
       </li>
 
       <!-- Nav Item - Logout -->
       <li class="nav-item">
         <a class="nav-link" href="{% url 'logout' %}">
           <i class="fas fa-fw fa-sign-out-alt"></i>
-          <span>Logout</span></a>
+          <span>Выйти</span></a>
       </li>
 
       <!-- Divider -->
