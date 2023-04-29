@@ -51,7 +51,7 @@ class SignUpView(CreateView):
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'common/profile.html'
+    template_name = 'common/profile_new.html'
 
 class ProfileUpdateView(LoginRequiredMixin, TemplateView):
     user_form = UserForm

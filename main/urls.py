@@ -4,7 +4,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
 from apps.common.views import *
-
+from apps.account.views import *
 
 
 
@@ -67,9 +67,14 @@ urlpatterns = [
              template_name='common/password-reset/password_reset_complete.html'
          ),
          name='password_reset_complete'),
-
+    path('account/', include('apps.account.urls', namespace='account')),
     #path('oauth/', include('social_django.urls', namespace='social')),  # <-- here
 
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = pageNotFound

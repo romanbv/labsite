@@ -1,17 +1,40 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView
 
 
 from .forms import *
 from .models import *
+from .utils import *
+
+class OrdersView(DataMixin, ListView):
+    model = Order
+    template_name = 'orders/orders.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        return Order.objects.filter(user = self.request.user.id)
 
 
-def orders_view(request):
-    UserOrders = Order.objects.filter(user = request.user.id)
-    return render(request, 'orders/orders.html', {'orders':UserOrders})
+class ShowOrder(DataMixin, DetailView):
+    model = Order
+    template_name = 'orders/order.html'
+    slug_url_kwarg = 'order_num'
+    context_object_name = 'order'
+    allow_empty = False
+    def get_object(self, queryset=None):
+        slug = self.kwargs['order_num']
+        a_obj = Order.objects.get(number=slug)
+        try:
+            d_obj = Order.objects.get(number=a_obj)
+        except Order.DoesNotExist:
+            d_obj = None
+        return d_obj
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        #c_def = self.get_user_context(title=context['title'])
+        return dict(list(context.items()) + list(c_def.items()))
 
-def order_view(request, order_num ):
-    UserOrder = get_object_or_404(Order, number = order_num)
-    return render(request, 'orders/order.html', {'order':UserOrder})
 
 def add_order(request):
     user = request.user
