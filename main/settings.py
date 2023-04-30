@@ -42,7 +42,7 @@ DEFAULT_APPS = [
 LOCAL_APPS = [
 
     'apps.common.apps.CommonConfig',
-    'apps.account.apps.AccountConfig',
+    'apps.userprofiles.apps.AccountConfig',
     'apps.companies.apps.CompanyConfig',
     'apps.orders.apps.OrdersConfig',
 
@@ -177,5 +177,5 @@ MESSAGE_TAGS = {
 
 
 ABSOLUTE_URL_OVERRIDES = {
-    'auth.user': lambda u: "/account/%s" % u.pk,
+    'auth.user': lambda u: "/userprofiles/%s" % u.pk,
 }

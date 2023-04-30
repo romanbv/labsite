@@ -1,9 +1,13 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
 
-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 from .forms import *
-from .models import *
+
 from .utils import *
 
 class OrdersView(DataMixin, ListView):
@@ -36,6 +40,36 @@ class ShowOrder(DataMixin, DetailView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
+class OrderCreateView(CreateView):
+    model = Order
+    template_name = 'orders/add_order.html'
+    fields = "__all__"
+class AddOrder(LoginRequiredMixin, CreateView):
+    form_class = addOrderForm
+    model = Order
+    template_name = 'orders/add_order.html'
+    success_url = reverse_lazy('orders:add_order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+    helper = None
+
+    def form_valid(self, form):
+
+        return super().form_valid(form)
+
+    def __init__(self, *args, **kwargs):
+        super(AddOrder, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-AddOrderForm'
+        self.helper.form_method = 'post'
+        self.helper.form_action = 'url_action_call'
+        self.helper.add_input(Submit('submit', 'Сохранить', css_class='btn-primary'))
+
+    def get_context_data(self, **kwargs):
+        context = super(AddOrder, self).get_context_data(**kwargs)
+        context['helper'] = self.helper
+        return context
+
 def add_order(request):
     user = request.user
     if request.method == "POST":
@@ -50,7 +84,7 @@ def add_order(request):
                 for f in files:
                     file_instance = OrderFile(file=f, order=order_instance, owner = user)
                     file_instance.save()
-                return redirect('account:profile', user_id=request.user.pk)
+                return redirect('userprofiles:profile', user_id=request.user.pk)
             except:
                 form.add_error(None,'Ошибка создания заказа')
                 file_form.add_error(None,'Ошибка загрузки файла')
@@ -61,4 +95,4 @@ def add_order(request):
     return render(request, 'orders/add_order.html', {'form':form, 'title':'Добавление заказа', 'file_form':file_form})
 
 def add_file(request):
-    return render(request, 'account/profile.html')
+    return render(request, 'userprofiles/profile.html')

@@ -12,7 +12,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Django CRM - Register</title>
+  <title>Labbs  - регистрация</title>
 
   <!-- Custom fonts for this template-->
   <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
@@ -35,22 +35,22 @@
           <div class="col-lg-8">
             <div class="p-5">
               <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                <h1 class="h4 text-gray-900 mb-4">Регистрация пользователя!</h1>
               </div>
               <form method="POST">
                 {% csrf_token %}
                 {{form | crispy}}
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Создать</button>
               </form>
               <hr>
               <div class="text-center">
-                <a class="small" href="{% url 'password_reset' %}">Forgot Password?</a>
+                <a class="small" href="{% url 'password_reset' %}">Забыли пароль?</a>
               </div>
               <div class="text-center">
-                <a class="small" href="{% url 'login' %}">Already have an account? Login!</a>
+                <a class="small" href="{% url 'login' %}">Уже есть аккаунт? Войдите!</a>
               </div>
               <div class="text-center">
-                <a class="small" href="{% url 'home' %}">Home</a>
+                <a class="small" href="{% url 'home' %}">Главная</a>
               </div>
             </div>
           </div>

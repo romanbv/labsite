@@ -18,7 +18,7 @@ def add_company(request):
         if form.is_valid():
             try:
                 form.save()
-                return redirect('account:profile', user_id=request.user.pk)
+                return redirect('userprofiles:profile', user_id=request.user.pk)
             except:
                 form.add_error(None,'Ошибка создания компании')
     else:
