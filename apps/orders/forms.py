@@ -15,7 +15,7 @@ class addOrderForm(forms.ModelForm):
 
         }
 
-class OrderFileModelForm(forms.ModelForm):
+class OrderFileForm(forms.ModelForm):
     class Meta:
         model = OrderFile
         fields = ['file']

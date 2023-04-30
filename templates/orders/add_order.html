@@ -9,9 +9,8 @@
 <!--            <form action="{% url 'orders:add_order' %}" method="post" enctype="multipart/form-data">-->
             <form  method="post" >
                 {% csrf_token %}
-
-<!--                 {{ form.as_p }}-->
-                 {% crispy form helper %}
+                {% crispy form helper %}
+                {% crispy file_form helper %}
 
             </form>
         </div>
