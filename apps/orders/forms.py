@@ -1,20 +1,36 @@
 from django import forms
+from django.core.files.uploadedfile import UploadedFile
 from django.forms import ClearableFileInput
 
 from .models import *
 
 class addOrderForm(forms.ModelForm):
+    # file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
+    file_field = forms.FileField(required=False)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['company'].empty_label = "Не выбрана"
+        self.fields['file_field'].label = "Файл заказа"
     class Meta:
         model = Order
         fields = "__all__"
         widgets = {
             'number': forms.TextInput(attrs={'class': 'form-control'}),
-
         }
+    def save(self, commit = True):
+        order = super().save(commit=commit)
+        file = self.cleaned_data.get('file_field')
+        if file:
+            order_file = OrderFile(order=order, owner_id = order.user.pk, file = file)
+            order_file.save()
 
+
+        # OrderFile.objects.create(
+        #             order=order,
+        #             owner_id = order.user.pk,
+        #             file=self.cleaned_data.get('file_field')
+        #            )
+        return order
 class OrderFileForm(forms.ModelForm):
     class Meta:
         model = OrderFile

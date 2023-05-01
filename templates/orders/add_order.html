@@ -7,11 +7,11 @@
    <h2>{{title }}</h2>
         <div class="container">
 <!--            <form action="{% url 'orders:add_order' %}" method="post" enctype="multipart/form-data">-->
-            <form  method="post" >
+            <form  method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {% crispy form helper %}
-                {% crispy file_form helper %}
-
+                {{ form | crispy }}
+                {{ file_form | crispy }}
+             <button type="submit" class="btn btn-success btn-block">Создать</button>
             </form>
         </div>
    </div>

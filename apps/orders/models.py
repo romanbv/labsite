@@ -54,5 +54,8 @@ class OrderFile(models.Model):
                 loader.upload(path, yapath)
                 self.yandex_file_path = yapath
             except:
-                self.yandex_file_path = yapath
+                self.yandex_file_path = None
         super().save(*args, **kwargs)
+
+    # def get_absolute_url(self):
+    #     return reverse('orders:order', kwargs={'order_num': self.order})
