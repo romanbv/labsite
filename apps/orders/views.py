@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 
 
@@ -10,7 +10,8 @@ from .forms import *
 
 from .utils import *
 
-class OrdersView(DataMixin, ListView):
+class ordersView(LoginRequiredMixin, DataMixin, ListView):
+    login_url = '/login'
     model = Order
     template_name = 'orders/orders.html'
     context_object_name = 'orders'
@@ -18,8 +19,18 @@ class OrdersView(DataMixin, ListView):
     def get_queryset(self):
         return Order.objects.filter(user = self.request.user.id)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
 
-class ShowOrder(DataMixin, DetailView):
+        ]
+
+        return context
+
+class showOrder(LoginRequiredMixin, DataMixin, DetailView):
+    login_url = '/login'
     model = Order
     template_name = 'orders/order.html'
     slug_url_kwarg = 'order_num'
@@ -35,20 +46,62 @@ class ShowOrder(DataMixin, DetailView):
         return d_obj
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        order = self.get_object()
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
+            {'title': order.pk, 'url': ""},
+        ]
         c_def = self.get_user_context()
         #c_def = self.get_user_context(title=context['title'])
         return dict(list(context.items()) + list(c_def.items()))
 
 
 
-class AddOrder(LoginRequiredMixin, CreateView):
+class addOrder(LoginRequiredMixin, CreateView):
 
     form_class = addOrderForm
-    template_name = 'orders/add_order.html'
+    template_name = 'orders/order-add.html'
     #success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')
     raise_exception = True
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
+
+        ]
+
+        return context
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+class updateOrder(LoginRequiredMixin, UpdateView):
+    model = Order
+    # fields = "__all__"
+
+    form_class = updateOrderForm
+    template_name = 'orders/order-update.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        order = self.get_object()
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
+            {'title': order.pk, 'url': ""},
+        ]
+
+        return context
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
     # def form_valid(self, form):
     #     form.save()
@@ -94,8 +147,7 @@ class AddOrder(LoginRequiredMixin, CreateView):
     #
     #     return self.render_to_response(context)
 
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
+
 
 
 

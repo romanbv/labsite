@@ -9,15 +9,15 @@
 
     <div class="main-body">
 
-          <!-- Breadcrumb -->
-          <nav aria-label="breadcrumb" class="main-breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Дашборд</a></li>
-              <li class="breadcrumb-item">{{user.first_name}} {{user.last_name}}</li>
-              <li class="breadcrumb-item active" aria-current="page">Профиль</li>
-            </ol>
-          </nav>
-          <!-- /Breadcrumb -->
+<!--          &lt;!&ndash; Breadcrumb &ndash;&gt;-->
+<!--          <nav aria-label="breadcrumb" class="main-breadcrumb">-->
+<!--            <ol class="breadcrumb">-->
+<!--              <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Дашборд</a></li>-->
+<!--              <li class="breadcrumb-item">{{user.first_name}} {{user.last_name}}</li>-->
+<!--              <li class="breadcrumb-item active" aria-current="page">Профиль</li>-->
+<!--            </ol>-->
+<!--          </nav>-->
+<!--          &lt;!&ndash; /Breadcrumb &ndash;&gt;-->
 
           <div class="row gutters-sm">
             <div class="col-md-4 mb-3">
@@ -30,7 +30,7 @@
                       <p class="text-secondary mb-1">Пользователь</p>
                       <p class="text-muted font-size-sm">{{user.profile.city}}</p>
                       <button class="btn btn-primary" onclick="location.href = '{% url 'logout' %}'">Выйти</button>
-                     <button class="btn btn-outline-primary" onclick="location.href='{% url 'apps.userprofiles:check_token' %}'">Проверить загрузку</button>
+                     <button class="btn btn-outline-primary" onclick="location.href='{% url 'userprofiles:check_token' %}'">Проверить загрузку</button>
                       <div> {{message}}</div>
                     </div>
                   </div>

@@ -6,9 +6,10 @@ app_name = 'orders'
 
 urlpatterns = [
     # post views
-    path('', OrdersView.as_view(), name='orders'),
-    path('add_order', AddOrder.as_view(), name='add_order'),
-    path('<slug:order_num>', ShowOrder.as_view(), name='order'),
+    path('', ordersView.as_view(), name='orders'),
+    path('order_add', addOrder.as_view(), name='order_add'),
+    path('order_update/<int:pk>', updateOrder.as_view(), name='order_update'),
+    path('<slug:order_num>', showOrder.as_view(), name='order'),
 
 
 

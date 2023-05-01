@@ -31,7 +31,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         print(self.request.user.id)
-        context['book_list'] = self.request.user
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+
+        ]
         return context
 
 class SignUpView(CreateView):

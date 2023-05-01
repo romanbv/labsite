@@ -31,6 +31,21 @@ class addOrderForm(forms.ModelForm):
         #             file=self.cleaned_data.get('file_field')
         #            )
         return order
+
+class updateOrderForm(forms.ModelForm):
+    # file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
+    file_field = forms.FileField(required=False)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['company'].empty_label = "Не выбрана"
+        self.fields['file_field'].label = "Файл заказа"
+    class Meta:
+        model = Order
+        fields = "__all__"
+        widgets = {
+            'number': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
 class OrderFileForm(forms.ModelForm):
     class Meta:
         model = OrderFile

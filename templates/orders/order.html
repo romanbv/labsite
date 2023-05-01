@@ -1,15 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-   <div class="container justify-content-center">
-   <h2>Заказ №{{order.number }}</h2>
-        <div class="container">
-            <ul>
-                <li> Дата: {{order.date|date:"d.m.Y"}}</li>
-                <li> Компания:  <a href ="{{order.company.get_absolute_url }}">{{order.company}}</a></li>
-                <li> Пользователь: <a href ="{{order.user.get_absolute_url}}">{{order.user}}</a></li>
 
-            </ul>
-         </div>
-   </div>
+    <div class="container-fluid">
+
+        <div class="main-body">
+
+
+
+           <h2>Заказ №{{order.number }}</h2>
+
+                <ul>
+                    <li> ID: {{order.id}}</li>
+                    <li> Дата: {{order.date|date:"d.m.Y"}}</li>
+                    <li> Компания:  <a href ="{{order.company.get_absolute_url }}">{{order.company}}</a></li>
+                    <li> Пользователь: <a href ="{{order.user.get_absolute_url}}">{{order.user}}</a></li>
+
+                </ul>
+
+
+               <button class="btn btn-sm btn-outline-primary w-10" onclick="location.href='{% url 'orders:order_update' pk=order.pk  %}'">Изменить заказ</button>
+
+        </div>
+     </div>
 {% endblock %}

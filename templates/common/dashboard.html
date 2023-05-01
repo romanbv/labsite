@@ -6,7 +6,7 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-            <h1 class="h3 mb-0 text-gray-800">Инструменты</h1>
+            <h1 class="h3 mb-0 text-gray-800">Разделы приложения</h1>
         </div>          
 
         <!-- Main Content Here -->
@@ -41,7 +41,7 @@
                       <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"> <a  href="{% url 'orders:orders' %}">Заказы</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">18,002</div>
                        <div class="button mt-2 d-flex flex-row align-items-center">
-                         <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'orders:add_order' %}'">Создать заказ</button>
+                         <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'orders:order_add' %}'">Создать заказ</button>
                        </div>
                     </div>
                     <div class="col-auto">

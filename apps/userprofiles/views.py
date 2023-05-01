@@ -23,6 +23,7 @@ from apps.companies.models import Company
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
+    login_url = '/login'
     template_name = 'userprofiles/profile.html'
 
 
@@ -34,6 +35,10 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['companies'] = UserCompanies
         context['orders'] = UserOrders
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Профиль', 'url': reverse_lazy('profile')},
+        ]
 
 
         return context
@@ -43,6 +48,14 @@ class ProfileUpdateView(LoginRequiredMixin, TemplateView):
     profile_form = ProfileForm
     template_name = 'userprofiles/profile-update.html'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Профиль', 'url': reverse_lazy('profile')},
+        ]
+
+        return context
     def post(self, request):
 
         post_data = request.POST or None
