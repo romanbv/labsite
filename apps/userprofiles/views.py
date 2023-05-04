@@ -18,8 +18,8 @@ import yadisk
 
 #Другие приложения
 from apps.common.forms import UserForm, ProfileForm
-from apps.orders.models import Order
-from apps.companies.models import Company
+from apps.crm.models import *
+
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

@@ -23,7 +23,7 @@ class ordersView(LoginRequiredMixin, DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
+            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
 
         ]
 
@@ -49,7 +49,7 @@ class showOrder(LoginRequiredMixin, DataMixin, DetailView):
         order = self.get_object()
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
+            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
             {'title': order.pk, 'url': ""},
         ]
         c_def = self.get_user_context()
@@ -71,7 +71,7 @@ class addOrder(LoginRequiredMixin, CreateView):
 
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
+            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
 
         ]
 
@@ -95,7 +95,7 @@ class updateOrder(LoginRequiredMixin, UpdateView):
         order = self.get_object()
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Заказы', 'url': reverse_lazy('orders:orders')},
+            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
             {'title': order.pk, 'url': ""},
         ]
 

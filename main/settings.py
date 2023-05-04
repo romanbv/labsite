@@ -43,8 +43,6 @@ LOCAL_APPS = [
 
     'apps.common.apps.CommonConfig',
     'apps.userprofiles.apps.AccountConfig',
-    'apps.companies.apps.CompanyConfig',
-    'apps.orders.apps.OrdersConfig',
     'apps.crm.apps.CrmConfig',
 
 

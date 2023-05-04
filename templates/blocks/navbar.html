@@ -19,7 +19,7 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{{request.user.get_absolute_url}}">Профиль</a></li>
-            <li><a class="dropdown-item" href="{% url 'orders:orders' %}">Заказы</a></li>
+            <li><a class="dropdown-item" href="{% url 'crm:orders' %}">Заказы</a></li>
             <li><a class="dropdown-item disables" href="">Компания</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
