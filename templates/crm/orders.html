@@ -26,7 +26,7 @@
                         <td>{{o.date|date:"d.m.Y"}}</td>
                         <td>{{o.company }}</td>
                         <td>{{o.number }}</td>
-                        <td><a href ="{% url 'orders:order_update' pk=o.pk %}">Изменить</a></td>
+                        <td><a href ="{% url 'crm:order_update' pk=o.pk %}">Изменить</a></td>
                     </tr>
                     {% endfor%}
                 </tbody>

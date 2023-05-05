@@ -5,7 +5,7 @@ from django.http import  HttpResponseNotFound
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
-
+from  apps.crm.models import *
 class HomeView(TemplateView):
 
     template_name = 'common/home.html'
@@ -27,10 +27,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     login_url = reverse_lazy('home')
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
+        userCompanies = Company.objects.filter(owner=self.request.user.id)
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        print(self.request.user.id)
+        context['companies'] = userCompanies
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
 

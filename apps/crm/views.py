@@ -146,17 +146,35 @@ class updateOrder(LoginRequiredMixin, UpdateView):
     #                                 )
     #
     #     return self.render_to_response(context)
-def add_file(request):
-    return render(request, 'userprofiles/profile.html')
 
-#COMPANY
+class showCompany(LoginRequiredMixin, DataMixin, DetailView):
+    login_url = '/login'
+    model = Company
+    template_name = 'crm/company.html'
+    #slug_url_kwarg = 'order_num'
+    context_object_name = 'company'
+    allow_empty = False
+    def get_object(self, queryset=None):
+        num = self.kwargs['company_id']
 
-def company_view(request, company_id):
-    company = Company.objects.get(pk=company_id)
-    UserOrders = Order.objects.filter(user=request.user.id, company = company_id)
-    return render(request, 'crm/company.html', {'company':company, 'orders':UserOrders})
-
-
+        try:
+            a_obj = Company.objects.get(pk=num)
+        except Company.DoesNotExist:
+            a_obj = None
+        return a_obj
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        company = self.get_object()
+        orders = Order.objects.filter(company=company.id)[:5]
+        context['orders'] = orders
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компания', 'url': ""},
+            {'title': company.pk, 'url': ""},
+        ]
+        c_def = self.get_user_context()
+        #c_def = self.get_user_context(title=context['title'])
+        return dict(list(context.items()) + list(c_def.items()))
 
 class addCompany(LoginRequiredMixin, CreateView):
     form_class = addCompanyForm
@@ -179,20 +197,30 @@ class addCompany(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 
+class updateCompany(LoginRequiredMixin, UpdateView):
+    model = Company
+    # fields = "__all__"
 
-def add_company(request):
-    if request.method == "POST":
-        form = addCompanyForm( request.POST)
-        if form.is_valid():
-            try:
-                form.save()
-                return redirect('userprofiles:profile', user_id=request.user.pk)
-            except:
-                form.add_error(None,'Ошибка создания компании')
-    else:
-        form = addCompanyForm()
+    form_class = updateCompanyForm
+    template_name = 'crm/company-update.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
 
-    return render(request, 'crm/add_company.html', {'form':form, 'title':'Добавление компании'})
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        company = self.get_object()
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компания', 'url': ""},
+            {'title': company.pk, 'url': ""},
+        ]
+
+        return context
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
 
 
 class priceListView(LoginRequiredMixin, DataMixin, DetailView):

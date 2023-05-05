@@ -28,12 +28,12 @@ class Company(models.Model):
 
         ))
     def get_absolute_url(self):
-        return reverse('companies:company', kwargs={'company_id': self.pk})
+        return reverse('crm:company', kwargs={'company_id': self.pk})
     class Meta():
         verbose_name = "Компания"
         verbose_name_plural = "Компании"
 class Order(models.Model):
-    UID = models.CharField(verbose_name='UID',db_index=True, max_length=64, null=True)
+
     company = models.ForeignKey(Company, verbose_name='Компания',  on_delete=models.CASCADE)
     number = models.CharField(max_length= 9, verbose_name="Номер")
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
@@ -46,7 +46,7 @@ class Order(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('orders:order', kwargs={'order_num': self.number})
+        return reverse('crm:order', kwargs={'order_num': self.number})
 
     class Meta():
         verbose_name = "Заказы"
