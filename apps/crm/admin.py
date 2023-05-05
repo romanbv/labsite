@@ -8,5 +8,11 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Order, OrderAdmin)
+
 admin.site.register(Company)
-admin.site.register(CompanyType)
+class CompanyTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', )
+    search_fields = ('id', '')
+
+admin.site.register(CompanyType, CompanyTypeAdmin)

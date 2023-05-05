@@ -12,6 +12,10 @@ class CompanyType(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta():
+        verbose_name = "Тип компании"
+        verbose_name_plural = "Типы компаний"
+
 class Company(models.Model):
 
     name = models.TextField(max_length=500, blank=True, null=True, verbose_name=u"Название")
@@ -25,7 +29,9 @@ class Company(models.Model):
         ))
     def get_absolute_url(self):
         return reverse('companies:company', kwargs={'company_id': self.pk})
-
+    class Meta():
+        verbose_name = "Компания"
+        verbose_name_plural = "Компании"
 class Order(models.Model):
     UID = models.CharField(verbose_name='UID',db_index=True, max_length=64, null=True)
     company = models.ForeignKey(Company, verbose_name='Компания',  on_delete=models.CASCADE)

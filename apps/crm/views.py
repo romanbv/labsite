@@ -157,6 +157,29 @@ def company_view(request, company_id):
     return render(request, 'crm/company.html', {'company':company, 'orders':UserOrders})
 
 
+
+class addCompany(LoginRequiredMixin, CreateView):
+    form_class = addCompanyForm
+    template_name = 'crm/company-add.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компания', 'url': ""},
+
+        ]
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
 def add_company(request):
     if request.method == "POST":
         form = addCompanyForm( request.POST)
@@ -172,3 +195,21 @@ def add_company(request):
     return render(request, 'crm/add_company.html', {'form':form, 'title':'Добавление компании'})
 
 
+class priceListView(LoginRequiredMixin, DataMixin, DetailView):
+    login_url = '/login'
+    model = Pricelist
+    template_name = 'crm/pricelist.html'
+    context_object_name = 'pricelist'
+
+    def get_queryset(self):
+        return Pricelist.objects.filter(company = self.request.company, number = self.request.number)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Прайс', 'url': reverse_lazy('crm:pricelist')},
+
+        ]
+
+        return context
