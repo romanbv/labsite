@@ -11,8 +11,8 @@ from apps.userprofiles.views import *
 urlpatterns = [
     path('', HomeView.as_view(), name="home"),
     path('admin/', admin.site.urls),
-    path('orders/', include('apps.crm.urls')),
-    path('companies/', include('apps.crm.urls')),
+    path('crm/', include('apps.crm.urls')),
+
 
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
 

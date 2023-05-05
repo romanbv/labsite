@@ -4,7 +4,7 @@
    <div class="container justify-content-center">
    <h2>{{title }}</h2>
         <div class="container">
-            <form action="{% url 'companies:add_company' %}" method="post">
+            <form action="{% url 'crm:add_company' %}" method="post">
                 {% csrf_token %}
                 <div class="form-row">
 

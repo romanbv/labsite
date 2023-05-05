@@ -71,8 +71,36 @@ class OrderFile(models.Model):
     # def get_absolute_url(self):
     #     return reverse('orders:order', kwargs={'order_num': self.order})
 
+class Pricelist(models.Model):
+
+    number = models.CharField(max_length= 9, verbose_name="Номер")
+    company = models.ForeignKey(Company, verbose_name='Компания', on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return('{name}'.format(
+            name = self.name,
+        ))
+
+class ProductGroup(models.Model):
+    name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
+
+    def __str__(self):
+        return self.name
+class Product(models.Model):
+    name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
+    code = models.CharField(max_length=10, blank=False, verbose_name="Код")
+    group = models.ForeignKey(ProductGroup, verbose_name='Группа', on_delete=models.CASCADE)
+    pricelist = models.ForeignKey(Pricelist, verbose_name='Прайс', on_delete=models.CASCADE)
+    price = models.FloatField(null=True, blank=True, default=None, verbose_name="Цена")
+    def __str__(self):
+        return self.name
 
 
+class OrderedProduct(models.Model):
+    order = models.ForeignKey(Order, verbose_name='Заказ', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, verbose_name='Изделие', on_delete=models.CASCADE)
+    amount = models.FloatField(null=True, blank=True, default=None, verbose_name="Количество")
 
 
 
