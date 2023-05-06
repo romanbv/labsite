@@ -13,11 +13,15 @@ from .utils import *
 class ordersView(LoginRequiredMixin, DataMixin, ListView):
     login_url = '/login'
     model = Order
-    template_name = 'crm/orders.html'
+    template_name = 'crm/orders-list.html'
     context_object_name = 'orders'
 
     def get_queryset(self):
         return Order.objects.filter(user = self.request.user.id)
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     return queryset.prefetch_related('ordered_product__order')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,7 +64,7 @@ class showOrder(LoginRequiredMixin, DataMixin, DetailView):
 #START ORDER#
 class addOrder(LoginRequiredMixin, CreateView):
 
-    form_class = addOrderForm
+    form_class = OrderForm
     template_name = 'crm/order-add.html'
     #success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')
@@ -79,11 +83,39 @@ class addOrder(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 
+
+class OrderCreateView(CreateView):
+    model = Order
+    form_class = OrderForm
+    template_name = 'crm/order-add.html'
+    success_url = reverse_lazy('crm:orders')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['ordered_product_formset'] = OrderedProductFormSet(self.request.POST)
+        else:
+            context['ordered_product_formset'] = OrderedProductFormSet()
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        ordered_product_formset = context['ordered_product_formset']
+        if ordered_product_formset.is_valid():
+            self.object = form.save()
+            ordered_product_formset.instance = self.object
+            ordered_product_formset.save()
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+
+
 class updateOrder(LoginRequiredMixin, UpdateView):
     model = Order
     # fields = "__all__"
 
-    form_class = updateOrderForm
+    form_class = OrderForm
     template_name = 'crm/order-update.html'
     # success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')

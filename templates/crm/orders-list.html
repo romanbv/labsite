@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>
+      Список заказов</h1>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Номер заказа</th>
+        <th>Клиент</th>
+        <th>Адрес доставки</th>
+        <th>Заказанные изделия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td>{{ order.id }}</td>
+          <td>{{ order.company }}</td>
+          <td>{{ order.delivery_address }}</td>
+          <td>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Изделие</th>
+                  <th>Количество</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ordered_product in order.ordered_products.all %}
+                  <tr>
+                    <td>{{ ordered_product.product.name }}</td>
+                    <td>{{ ordered_product.amount }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<div class="button mt-2 d-flex flex-row align-items-center">
+    <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:order_add' %}'">Создать заказ</button>
+</div>
+{% endblock %}

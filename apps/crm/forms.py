@@ -1,10 +1,11 @@
 from django import forms
 from django.core.files.uploadedfile import UploadedFile
 from django.forms import ClearableFileInput
+from django.forms.models import inlineformset_factory
 
 from .models import *
 
-class addOrderForm(forms.ModelForm):
+class OrderForm(forms.ModelForm):
     # file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
     file_field = forms.FileField(required=False)
     def __init__(self, *args, **kwargs):
@@ -32,19 +33,20 @@ class addOrderForm(forms.ModelForm):
         #            )
         return order
 
-class updateOrderForm(forms.ModelForm):
-    # file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
-    file_field = forms.FileField(required=False)
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['company'].empty_label = "Не выбрана"
-        self.fields['file_field'].label = "Файл заказа"
+
+class OrderedProductForm(forms.ModelForm):
     class Meta:
-        model = Order
+        model = OrderedProduct
         fields = "__all__"
-        widgets = {
-            'number': forms.TextInput(attrs={'class': 'form-control'}),
-        }
+
+OrderedProductFormSet = inlineformset_factory(
+    Order,
+    OrderedProduct,
+    form=OrderedProductForm,
+    extra=1,
+    can_delete=True
+)
+
 
 class OrderFileForm(forms.ModelForm):
     class Meta:

@@ -7,7 +7,7 @@ app_name = 'crm'
 urlpatterns = [
     # post views
     path('orders/', ordersView.as_view(), name='orders'),
-    path('orders/order_add', addOrder.as_view(), name='order_add'),
+    path('orders/order_add', OrderCreateView.as_view(), name='order_add'),
     path('orders/order_update/<int:pk>', updateOrder.as_view(), name='order_update'),
     path('orders/<slug:order_num>', showOrder.as_view(), name='order'),
     path('company/<int:company_id>', showCompany.as_view(), name='company'),
