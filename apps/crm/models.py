@@ -84,15 +84,25 @@ class Pricelist(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return('{name}'.format(
-            name = self.name,
-        ))
+        return self.number
+    def get_absolute_url(self):
+        return reverse('crm:pricelist', kwargs={'pricelist_id': self.pk})
+
+    class Meta():
+        verbose_name = "Прайс"
+        verbose_name_plural = "Прайсы"
 
 class ProductGroup(models.Model):
     name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
 
     def __str__(self):
         return self.name
+
+    class Meta():
+        verbose_name = "Группа изделий"
+        verbose_name_plural = "Группы изделий"
+
+
 class Product(models.Model):
     name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
     code = models.CharField(max_length=10, blank=False, verbose_name="Код")
@@ -102,6 +112,12 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('crm:product', kwargs={'product_id': self.pk})
+
+    class Meta():
+        verbose_name = "Изделие"
+        verbose_name_plural = "Изделия"
 
 class OrderedProduct(models.Model):
     order = models.ForeignKey(Order, verbose_name='Заказ', on_delete=models.CASCADE)

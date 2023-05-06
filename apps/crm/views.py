@@ -57,7 +57,7 @@ class showOrder(LoginRequiredMixin, DataMixin, DetailView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-
+#START ORDER#
 class addOrder(LoginRequiredMixin, CreateView):
 
     form_class = addOrderForm
@@ -147,6 +147,10 @@ class updateOrder(LoginRequiredMixin, UpdateView):
     #
     #     return self.render_to_response(context)
 
+#END ORDER#
+
+
+#START COMPANY#
 class showCompany(LoginRequiredMixin, DataMixin, DetailView):
     login_url = '/login'
     model = Company
@@ -166,7 +170,9 @@ class showCompany(LoginRequiredMixin, DataMixin, DetailView):
         context = super().get_context_data(**kwargs)
         company = self.get_object()
         orders = Order.objects.filter(company=company.id)[:5]
+        pricelists = Pricelist.objects.filter(company=company.id)
         context['orders'] = orders
+        context['pricelists'] = pricelists
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
             {'title': 'Компания', 'url': ""},
@@ -177,7 +183,7 @@ class showCompany(LoginRequiredMixin, DataMixin, DetailView):
         return dict(list(context.items()) + list(c_def.items()))
 
 class addCompany(LoginRequiredMixin, CreateView):
-    form_class = addCompanyForm
+    form_class = CompanyForm
     template_name = 'crm/company-add.html'
     # success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')
@@ -201,7 +207,7 @@ class updateCompany(LoginRequiredMixin, UpdateView):
     model = Company
     # fields = "__all__"
 
-    form_class = updateCompanyForm
+    form_class = CompanyForm
     template_name = 'crm/company-update.html'
     # success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')
@@ -221,23 +227,162 @@ class updateCompany(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 
+#END COMPANY VIEWS#
 
 
+#START PRODUCT VIEW#
+class showProduct(LoginRequiredMixin, DataMixin, DetailView):
+    login_url = '/login'
+    model = Company
+    template_name = 'crm/product.html'
+    #slug_url_kwarg = 'order_num'
+    context_object_name = 'product'
+    allow_empty = False
+    def get_object(self, queryset=None):
+        num = self.kwargs['product_id']
+
+        try:
+            a_obj = Product.objects.get(pk=num)
+        except Company.DoesNotExist:
+            a_obj = None
+        return a_obj
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+
+
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Изделие', 'url': ""},
+            {'title': product.pk, 'url': ""},
+        ]
+        c_def = self.get_user_context()
+        #c_def = self.get_user_context(title=context['title'])
+        return dict(list(context.items()) + list(c_def.items()))
+
+class addProduct(LoginRequiredMixin, CreateView):
+    form_class = ProductForm
+    template_name = 'crm/product-change.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Изделие', 'url': ""},
+
+        ]
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+class updateProduct(LoginRequiredMixin, UpdateView):
+    model = Product
+    # fields = "__all__"
+
+    form_class = ProductForm
+    template_name = 'crm/product-change.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Изделие', 'url': ""},
+            {'title': product.pk, 'url': ""},
+        ]
+
+        return context
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+#END PRODUCT VIEW#
+
+
+
+
+#START PRICELIST VIEW#
 class priceListView(LoginRequiredMixin, DataMixin, DetailView):
     login_url = '/login'
     model = Pricelist
     template_name = 'crm/pricelist.html'
     context_object_name = 'pricelist'
 
-    def get_queryset(self):
-        return Pricelist.objects.filter(company = self.request.company, number = self.request.number)
+    def get_object(self, queryset=None):
+        num = self.kwargs['pricelist_id']
+
+        try:
+            a_obj = Pricelist.objects.get(pk=num)
+        except Company.DoesNotExist:
+            a_obj = None
+        return a_obj
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        pricelist = self.get_object()
+        products = Product.objects.filter(pricelist=pricelist.id)
+        context['products'] = products
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Прайс', 'url': reverse_lazy('crm:pricelist')},
+            {'title': 'Прайс', 'url': ""},
+            {'title':   pricelist.pk, 'url':""},
 
         ]
 
         return context
+
+class addPricelist(LoginRequiredMixin, CreateView):
+    form_class = PricelistForm
+    template_name = 'crm/pricelist-change.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Прайс', 'url': ""},
+
+        ]
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+class updatePricelist(LoginRequiredMixin, UpdateView):
+    model = Pricelist
+    # fields = "__all__"
+
+    form_class = PricelistForm
+    template_name = 'crm/pricelist-change.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        price = self.get_object()
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Прайс', 'url': ""},
+            {'title': price.pk, 'url': ""},
+        ]
+
+        return context
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+#END PRICELIST VIEW#

@@ -57,7 +57,7 @@ class OrderFileForm(forms.ModelForm):
     #number = forms.CharField(max_length=9, label='Номер')
     #company = forms.ModelChoiceField(queryset=Company.objects.all(),  label='Компания')
 
-class addCompanyForm(forms.ModelForm):
+class CompanyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         #self.fields['type'].empty_label = "Не выбрана"
@@ -69,15 +69,43 @@ class addCompanyForm(forms.ModelForm):
 
         }
 
-class updateCompanyForm(forms.ModelForm):
+class ProductGroupForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         #self.fields['company'].empty_label = "Не выбрана"
 
     class Meta:
-        model = Company
+        model = ProductGroup
         fields = "__all__"
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ProductForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #self.fields['company'].empty_label = "Не выбрана"
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class PricelistForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #self.fields['company'].empty_label = "Не выбрана"
+
+    class Meta:
+        model = Pricelist
+        fields = "__all__"
+        widgets = {
+            'number': forms.TextInput(attrs={'class': 'form-control'}),
         }

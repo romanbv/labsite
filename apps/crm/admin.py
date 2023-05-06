@@ -9,10 +9,23 @@ class OrderAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 
-admin.site.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'type', 'city', 'owner')
+    list_display_links = ('id', )
+    search_fields = ('id', '')
+
+admin.site.register(Company, CompanyAdmin)
 class CompanyTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
     list_display_links = ('id', )
     search_fields = ('id', '')
 
 admin.site.register(CompanyType, CompanyTypeAdmin)
+
+class ProductGroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('id', )
+    search_fields = ('id', '')
+
+admin.site.register(ProductGroup, ProductGroupAdmin)
+
