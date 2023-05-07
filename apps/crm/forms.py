@@ -39,11 +39,16 @@ class OrderedProductForm(forms.ModelForm):
         model = OrderedProduct
         fields = "__all__"
 
+    widgets = {
+        'product': forms.Select(attrs={'class': 'form-control'}),
+        'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+    }
+
 OrderedProductFormSet = inlineformset_factory(
     Order,
     OrderedProduct,
     form=OrderedProductForm,
-    extra=1,
+    extra=2,
     can_delete=True
 )
 

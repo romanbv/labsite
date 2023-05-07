@@ -24,7 +24,20 @@
                   <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{form | crispy}}
+                    <table id="products">
+                        {{ product_formset.management_form }}
 
+                    {% for product_form in ordered_products %}
+                      <tr>
+                        <td>{{ product_form.product.label_tag }}</td>
+                        <td>{{ product_form.product }}</td>
+                        <td>{{ product_form.amount.label_tag }}</td>
+                        <td>{{ product_form.amount }}</td>
+
+                        <td><button type="submit" name="delete_ordered_product" value="{{product_form.id.value}}">Удалить</button></td>
+                      </tr>
+                    {% endfor %}
+                  </table>
                     <button type="submit" class="btn btn-success btn-block">Изменить</button>
                   </form>
                   <hr>

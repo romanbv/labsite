@@ -13,22 +13,17 @@
                 {{ file_form | crispy }}
 
                 <h2>Заказанные изделия</h2>
-                 <table class="table table-bordered" id="ordered-products-table">
-                    <thead>
+                 <table id="products">
+                    {{ product_formset.management_form }}
+
+                    {% for product_form in product_formset %}
                       <tr>
-                        <th>Изделие</th>
-                        <th>Количество</th>
+                        <td>{{ product_form.product.label_tag }}</td>
+                        <td>{{ product_form.product }}</td>
+                        <td>{{ product_form.amount.label_tag }}</td>
+                        <td>{{ product_form.amount }}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {{ ordered_product_formset.management_form }}
-                      {% for form in ordered_product_formset %}
-                        <tr class="ordered-product-form">
-                          <td>{{ form.product }}</td>
-                          <td>{{ form.amount }}</td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
+                    {% endfor %}
                   </table>
              <button type="button" id="add-ordered-product-btn">Добавить изделие</button>
              <button type="submit" class="btn btn-success btn-block">Создать</button>
