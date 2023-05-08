@@ -32,6 +32,10 @@ class Company(models.Model):
     class Meta():
         verbose_name = "Компания"
         verbose_name_plural = "Компании"
+
+ #BEGIN ORDER#
+
+
 class Order(models.Model):
 
     company = models.ForeignKey(Company, verbose_name='Компания',  on_delete=models.CASCADE)

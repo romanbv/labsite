@@ -7,31 +7,31 @@ from .models import *
 
 class OrderForm(forms.ModelForm):
     # file_field = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': False}), required=False)
-    file_field = forms.FileField(required=False)
+    #file_field = forms.FileField(required=False)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['company'].empty_label = "Не выбрана"
-        self.fields['file_field'].label = "Файл заказа"
+        #self.fields['file_field'].label = "Файл заказа"
     class Meta:
         model = Order
         fields = "__all__"
         widgets = {
             'number': forms.TextInput(attrs={'class': 'form-control'}),
         }
-    def save(self, commit = True):
-        order = super().save(commit=commit)
-        file = self.cleaned_data.get('file_field')
-        if file:
-            order_file = OrderFile(order=order, owner_id = order.user.pk, file = file)
-            order_file.save()
-
-
-        # OrderFile.objects.create(
-        #             order=order,
-        #             owner_id = order.user.pk,
-        #             file=self.cleaned_data.get('file_field')
-        #            )
-        return order
+    # def save(self, commit = True):
+    #     order = super().save(commit=commit)
+    #     file = self.cleaned_data.get('file_field')
+    #     if file:
+    #         order_file = OrderFile(order=order, owner_id = order.user.pk, file = file)
+    #         order_file.save()
+    #
+    #
+    #     # OrderFile.objects.create(
+    #     #             order=order,
+    #     #             owner_id = order.user.pk,
+    #     #             file=self.cleaned_data.get('file_field')
+    #     #            )
+    #     return order
 
 
 class OrderedProductForm(forms.ModelForm):
@@ -44,15 +44,6 @@ class OrderedProductForm(forms.ModelForm):
         'amount': forms.NumberInput(attrs={'class': 'form-control'}),
     }
 
-OrderedProductFormSet = inlineformset_factory(
-    Order,
-    OrderedProduct,
-    form=OrderedProductForm,
-    extra=2,
-    can_delete=True
-)
-
-
 class OrderFileForm(forms.ModelForm):
     class Meta:
         model = OrderFile
@@ -63,6 +54,21 @@ class OrderFileForm(forms.ModelForm):
             # widget is important to upload multiple files
     #number = forms.CharField(max_length=9, label='Номер')
     #company = forms.ModelChoiceField(queryset=Company.objects.all(),  label='Компания')
+
+OrderedProductFormSet = inlineformset_factory(
+    Order,
+    OrderedProduct,
+    form=OrderedProductForm,
+    extra=1
+)
+
+OrderFileFormSet = inlineformset_factory(
+    Order,
+    OrderFile,
+    form=OrderFileForm,
+    extra=1
+
+)
 
 class CompanyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

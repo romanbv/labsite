@@ -1,0 +1,233 @@
+<!-- product_create_or_update.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<form enctype="multipart/form-data" class="container" method="post" id="product_form">
+    {% csrf_token %}
+    <!-- main form start --- in our case product form -->
+    <div class="card">
+        <div class="card-header card-header-secondary">
+            <h4 class="card-title">Add Order</h4>
+        </div>
+        {% for field in form %}
+            <div class="form-group card-body">
+                <label>{{field.label}}</label>
+                {% if field.field.required %}
+                    <span style="color: red;" class="required">*</span>
+                {% endif %}
+
+                {{field}}
+                {% if field.help_text %}
+                    <small style="color: grey">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p style="color: red">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <!-- main form end --- in our case product form -->
+
+    <!-- inline form for Images start -->
+
+    <!-- EXPLAINING with named_formsets.images as formset -->
+    <!-- Note: named_formsets is used in get_context_data function in views.py -->
+    <!-- Note: here images is our ImageFormSet name, used in get_named_formsets function in views.py -->
+    {% with named_formsets.files as formset %}
+        {{ formset.management_form }}
+        <script type="text/html" id="files-template">   // id="inlineformsetname-template"
+            <tr id="files-__prefix__" class= hide_all>  // id="inlineformsetname-__prefix__"
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+
+                {% for fields in formset.empty_form.visible_fields %}
+                    <td>{{fields}}</td>
+                {% endfor %}
+            </tr>
+        </script>
+
+        <div class="table-responsive card mt-4">
+            <div class="card-header card-header-secondary">
+                <h4 class="card-title">Добавить файлы</h4>
+            </div>
+            <table class="table card-body">
+                <thead class="text-secondary">
+                    <th>Файл <span style="color: red;" class="required">*</span></th>
+                    <th>Удалить?</th>
+                    <th>Custom Delete btn</th>
+                </thead>
+                <tbody id="item-files">  <!-- id="item-inlineformsetname" -->
+                    <!-- formset non forms errors -->
+                    {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                    {% endfor %}
+                    {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="files-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                                <td>
+                                    {{field}}
+                                    {% for error in field.errors %}
+                                        <span style="color: red">{{ error }}</span>
+                                    {% endfor %}
+                                </td>
+                            {% endfor %}
+                            <!-- delete code -->
+                            {% if formss.instance.pk %}
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                                        Удалить
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Вы уверены что хотите удалить заказанное файл?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'crm:delete_file' formss.instance.pk %}" type="button" class="btn btn-primary">Да, удалить</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="#" id="add-file-button" class="btn btn-secondary add-files">Добавить файл</a> <!-- id="add-inlineformsetname-button" -->
+        </div>
+    {% endwith %}
+    <!-- inline form for Files end -->
+
+    <!-- inline form for Variant start -->
+
+    <!-- EXPLAINING with named_formsets.ordered_products as formset -->
+    <!-- Note: named_formsets is used in get_context_data function in views.py -->
+    <!-- Note: here variants is our VariantFormSet name, used in get_named_formsets function in views.py -->
+    {% with named_formsets.ordered_products as formset %}
+        {{ formset.management_form }}
+        <script type="text/html" id="ordered_products-template">  // id="inlineformsetname-template"
+            // id='inlineformsetname-__prefix__'
+            <tr id="ordered_products-__prefix__" class= hide_all>
+                {% for fields in formset.empty_form.hidden_fields %}
+                    {{ fields }}
+                {% endfor %}
+
+                {% for fields in formset.empty_form.visible_fields %}
+                    <td>{{fields}}</td>
+                {% endfor %}
+            </tr>
+        </script>
+        <div class="table-responsive card mt-4">
+            <div class="card-header card-header-secondary">
+                <h4 class="card-title">Добавить изделие</h4>
+            </div>
+            <table class="table card-header">
+                <thead class="text-secondary">
+                    <th>Название <span style="color: red;" class="required">*</span></th>
+                    <th>Количество <span style="color: red;" class="required">*</span></th>
+                    <th>Delete?</th>
+                    <th>Custom Delete btn</th>
+                </thead>
+                <tbody id="item-ordered_products">  <!-- id="item-inlineformsetname" -->
+                    <!-- formset non forms errors -->
+                    {% for error in formset.non_form_errors %}
+                        <span style="color: red">{{ error }}</span>
+                    {% endfor %}
+                    {% for formss in formset %}
+                        {{ formss.management_form }}
+                        <tr id="ordered_products-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                            {{ formss.id }}
+                            {% for field in formss.visible_fields %}
+                                <td>
+                                    {{field}}
+                                    {% for error in field.errors %}
+                                        <span style="color: red">{{ error }}</span>
+                                    {% endfor %}
+
+                                    {% comment %} {{ field.DELETE }} {% endcomment %}
+                                </td>
+                            {% endfor %}
+                            {% comment %} for delete {% endcomment %}
+                            {% if formss.instance.pk %}
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                                        Удалить
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Вы уверены что хотите удалить заказанное изделие?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{% url 'crm:delete_product' formss.instance.pk %}" type="button" class="btn btn-primary">Да, удалить</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="#" id="add-product-button" class="btn btn-secondary add-ordered_products">Добавить изделие</a> <!-- id="add-inlineformsetname-button" -->
+        </div>
+
+        {% endwith %}
+        <!-- inline form for Images end -->
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-secondary btn-block">Сохранить</button>
+        </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+        // when user clicks add more btn of images
+      $('.add-files').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#item-files').children().length;
+          var tmplMarkup = $('#files-template').html();
+          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+          $('#item-files').append(compiledTmpl);
+
+          // update form count
+          $('#id_files-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
+
+  $(document).ready(function() {
+    // when user clicks add more btn of variants
+      $('.add-ordered_products').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#item-ordered_products').children().length;
+          var tmplMarkup = $('#ordered_products-template').html();
+          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+          $('#item-ordered_products').append(compiledTmpl);
+
+          // update form count
+          $('#id_ordered_products-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
+</script>
+
+{% endblock content %}
