@@ -63,6 +63,12 @@ class OrderInline():
 
 class OrderCreate(OrderInline, CreateView):
 
+    def get_initial(self):
+        initial = super().get_initial()
+        company = Company.objects.get(id=1)  # Получение значения из модели
+        initial['company'] = company
+        return initial
+
     def get_context_data(self, **kwargs):
         ctx = super(OrderCreate, self).get_context_data(**kwargs)
         ctx['named_formsets'] = self.get_named_formsets()
