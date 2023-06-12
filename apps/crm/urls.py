@@ -8,6 +8,7 @@ urlpatterns = [
     # post views
     path('orders/', ordersView.as_view(), name='orders'),
     path('orders/create/', OrderCreate.as_view(), name='order_create'),
+
     path('orders/update/<int:pk>/', OrderUpdate.as_view(), name='order_update'),
     #path('orders/order_add', OrderCreateView.as_view(), name='order_add'),
     #path('orders/order_update/<int:pk>', updateOrder.as_view(), name='order_update'),
@@ -26,6 +27,8 @@ urlpatterns = [
 
     path('delete-image/<int:pk>/', delete_file, name='delete_file'),
     path('delete-variant/<int:pk>/', delete_product, name='delete_product'),
+    path('orders/create/add_inline_form/', add_inline_form, name='add_inline_form'),
+
 
 
 

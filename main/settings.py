@@ -46,12 +46,14 @@ LOCAL_APPS = [
     'apps.crm.apps.CrmConfig',
 
 
+
 ]
 
 
 THIRD_PARTY_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
+    'django_htmx',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
@@ -71,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
 ]
 
 ROOT_URLCONF = 'main.urls'

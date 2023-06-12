@@ -86,6 +86,12 @@ class OrderCreate(OrderInline, CreateView):
                 'files': OrderFileFormSet(self.request.POST or None, self.request.FILES or None, prefix='files'),
             }
 
+def add_inline_form(request):
+        context = {}
+        context["formset"] = OrderFileFormSet(prefix='files')
+        return render(request, "crm/add-inline-form.html", context)
+
+
 
 class OrderUpdate(OrderInline, UpdateView):
 
