@@ -1,17 +1,19 @@
 
 
-            <form  method="post" enctype="multipart/form-data">
+<tr id="ordered_files-{{forms_count}}" class= hide_all>
+    {% for fields in formset.empty_form.hidden_fields %}
+    {{ fields }}
+    {% endfor %}
 
-                <p>Добавить изделие</p>
-
-                  {% for form in formset.forms %}
-                        <div id="{{ form.prefix }}-container">
-                          {{ form.as_table }}
-                        </div>
-                   {% endfor %}
+    {% for fields in formset.empty_form.visible_fields %}
+    <td>{{fields}}</td>
+    {% endfor %}
+</tr>
 
 
-            </form>
+
+
+
 
 
 

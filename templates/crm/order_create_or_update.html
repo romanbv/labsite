@@ -5,24 +5,26 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 
+<!--  для корректного добавления  форм inlineformset будем пересчитывать количество добавленных -->
 <script>
-<!--    $(document).ready(function() {-->
-<!--        // when user clicks add more btn of images-->
-<!--      $('.add-files').click(function(ev) {-->
-<!--          ev.preventDefault();-->
-<!--          var count = $('#item-files').children().length;-->
+    $(document).ready(function() {
+        // when user clicks add more btn of images
+      $('#add-files-button').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#item-ordered_files').children().length;
 <!--          var tmplMarkup = $('#files-template').html();-->
 <!--          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);-->
 <!--          $('#item-files').append(compiledTmpl);-->
 
-<!--          // update form count-->
-<!--          $('#id_files-TOTAL_FORMS').attr('value', count+1);-->
-<!--      });-->
-<!--  });-->
+          // update form count
+          $getElementById('id_files-__prefix__-id').id = 'id_files-'+ count+'-id';
+          $('#id_files-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
 
   $(document).ready(function() {
     // when user clicks add more btn of variants
-      $('.add-ordered_products').click(function(ev) {
+      $('#add-product-button').click(function(ev) {
           ev.preventDefault();
           var count = $('#item-ordered_products').children().length;
           var tmplMarkup = $('#ordered_products-template').html();
@@ -72,26 +74,83 @@
     <!-- Note: here images is our ImageFormSet name, used in get_named_formsets function in views.py -->
 
 
-    <div class="card mt-4">
-        {% with named_formsets.files as formset %}
-
-        <h3>Файлы</h3>
-        {{ formset.management_form }}
-            <div id="files">
-
-              {% for form in formset.forms %}
-                <div id="{{ form.prefix }}-container">
-                  {{ form.as_table }}
-                </div>
-              {% endfor %}
+    {% with named_formsets.files as formset %}
+    {{ formset.management_form }}
+        <div class="table-responsive card mt-2">
+            <div class="card-header card-header-secondary">
+                <h4 class="card-title">Добавить изделие</h4>
             </div>
-            <div id="inline-forms">
-              <!-- Здесь будут отображаться добавленные формы inlineformset -->
-            </div>
-            <button hx-get="{% url 'crm:add_inline_form' %}" hx-target="#inline-forms" hx-swap="afterend">Добавить файлы заказа</button>
+            <table class="table card-header">
+                <thead class="text-secondary">
+                <th>Название <span style="color: red;" class="required">*</span></th>
 
-        {% endwith %}
-    </div>
+                <th>Пометить для удаления</th>
+                <th>Удалить</th>
+                </thead>
+                <tbody id="item-ordered_files">  <!-- id="item-inlineformsetname" -->
+                <!-- formset non forms errors -->
+                {% for error in formset.non_form_errors %}
+                    <span style="color: red">{{ error }}</span>
+                {% endfor %}
+
+                {% for formss in formset %}
+                {{ formss.management_form }}
+
+                    <tr id="ordered_files-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                    {{ formss.id }}
+                    {% for field in formss.visible_fields %}
+                    <td>
+                        {{field}}
+                        {% for error in field.errors %}
+                        <span style="color: red">{{ error }}</span>
+                        {% endfor %}
+
+                        {% comment %} {{ field.DELETE }} {% endcomment %}
+                    </td>
+                    {% endfor %}
+                    {% comment %} for delete {% endcomment %}
+                    {% if formss.instance.pk %}
+                    <td>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                            Удалить
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Вы уверены что хотите удалить файл ?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{% url 'crm:delete_product' formss.instance.pk %}" type="button" class="btn btn-primary">Да, удалить</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+
+                {% endfor %}
+                <!-- Здесь будут отображаться добавленные формы inlineformset -->
+                </tbody>
+            </table>
+
+
+
+
+
+            <div class="md-3">
+               <button id="add-files-button" hx-get="{% url 'crm:add_inline_form' forms_count=formset.total_form_count %}" hx-target="#item-ordered_files" hx-swap="beforeend">Добавить файлы заказа</button>
+            </div>
+        </div>
+
+    {% endwith %}
+
     <!-- inline form for Files end -->
 
     <!-- inline form for Products start -->
@@ -101,81 +160,81 @@
     <!-- Note: here variants is our VariantFormSet name, used in get_named_formsets function in views.py -->
     {% with named_formsets.ordered_products as formset %}
     {{ formset.management_form }}
-    <script type="text/html" id="ordered_products-template">    // id="inlineformsetname-template"
-                                                                // id='inlineformsetname-__prefix__'
-    <tr id="ordered_products-__prefix__" class= hide_all>
-        {% for fields in formset.empty_form.hidden_fields %}
-        {{ fields }}
-        {% endfor %}
-
-        {% for fields in formset.empty_form.visible_fields %}
-        <td>{{fields}}</td>
-        {% endfor %}
-    </tr>
-    </script>
-    <div class="table-responsive card mt-2">
-        <div class="card-header card-header-secondary">
-            <h4 class="card-title">Добавить изделие</h4>
-        </div>
-        <table class="table card-header">
-            <thead class="text-secondary">
-            <th>Название <span style="color: red;" class="required">*</span></th>
-            <th>Количество <span style="color: red;" class="required">*</span></th>
-            <th>Пометить для удаления</th>
-            <th>Удалить</th>
-            </thead>
-            <tbody id="item-ordered_products">  <!-- id="item-inlineformsetname" -->
-            <!-- formset non forms errors -->
-            {% for error in formset.non_form_errors %}
-            <span style="color: red">{{ error }}</span>
+        <script type="text/html" id="ordered_products-template">    // id="inlineformsetname-template"
+                                                                    // id='inlineformsetname-__prefix__'
+        <tr id="ordered_products-__prefix__" class= hide_all>
+            {% for fields in formset.empty_form.hidden_fields %}
+            {{ fields }}
             {% endfor %}
-            {% for formss in formset %}
-            {{ formss.management_form }}
-            <tr id="ordered_products-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
-                {{ formss.id }}
-                {% for field in formss.visible_fields %}
-                <td>
-                    {{field}}
-                    {% for error in field.errors %}
-                    <span style="color: red">{{ error }}</span>
-                    {% endfor %}
 
-                    {% comment %} {{ field.DELETE }} {% endcomment %}
-                </td>
+            {% for fields in formset.empty_form.visible_fields %}
+            <td>{{fields}}</td>
+            {% endfor %}
+        </tr>
+        </script>
+        <div class="table-responsive card mt-2">
+            <div class="card-header card-header-secondary">
+                <h4 class="card-title">Добавить изделие</h4>
+            </div>
+            <table class="table card-header">
+                <thead class="text-secondary">
+                <th>Название <span style="color: red;" class="required">*</span></th>
+                <th>Количество <span style="color: red;" class="required">*</span></th>
+                <th>Пометить для удаления</th>
+                <th>Удалить</th>
+                </thead>
+                <tbody id="item-ordered_products">  <!-- id="item-inlineformsetname" -->
+                <!-- formset non forms errors -->
+                {% for error in formset.non_form_errors %}
+                <span style="color: red">{{ error }}</span>
                 {% endfor %}
-                {% comment %} for delete {% endcomment %}
-                {% if formss.instance.pk %}
-                <td>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
-                        Удалить
-                    </button>
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Вы уверены что хотите удалить заказанное изделие?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-footer">
-                                    <a href="{% url 'crm:delete_product' formss.instance.pk %}" type="button" class="btn btn-primary">Да, удалить</a>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                {% for formss in formset %}
+                {{ formss.management_form }}
+                <tr id="ordered_products-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                    {{ formss.id }}
+                    {% for field in formss.visible_fields %}
+                    <td>
+                        {{field}}
+                        {% for error in field.errors %}
+                        <span style="color: red">{{ error }}</span>
+                        {% endfor %}
+
+                        {% comment %} {{ field.DELETE }} {% endcomment %}
+                    </td>
+                    {% endfor %}
+                    {% comment %} for delete {% endcomment %}
+                    {% if formss.instance.pk %}
+                    <td>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal{{formss.instance.pk}}">
+                            Удалить
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal{{formss.instance.pk}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{formss.instance.pk}}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel{{formss.instance.pk}}">Вы уверены что хотите удалить заказанное изделие?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{% url 'crm:delete_product' formss.instance.pk %}" type="button" class="btn btn-primary">Да, удалить</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="md-3">
-            <a href="#" id="add-product-button" class="btn btn-secondary add-ordered_products">Добавить изделие</a> <!-- id="add-inlineformsetname-button" -->
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="md-3">
+                <a href="#" id="add-product-button" class="btn btn-secondary add-ordered_products">Добавить изделие</a> <!-- id="add-inlineformsetname-button" -->
+            </div>
         </div>
-    </div>
 
     {% endwith %}
     <!-- inline form for Products end -->
