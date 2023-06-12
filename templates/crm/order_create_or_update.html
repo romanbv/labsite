@@ -5,22 +5,22 @@
 {% block content %}
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 
-<!--  для корректного добавления  форм inlineformset будем пересчитывать количество добавленных -->
+
 <script>
     $(document).ready(function() {
         // when user clicks add more btn of images
       $('#add-files-button').click(function(ev) {
           ev.preventDefault();
-          var count = $('#item-ordered_files').children().length;
-<!--          var tmplMarkup = $('#files-template').html();-->
-<!--          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);-->
-<!--          $('#item-files').append(compiledTmpl);-->
+          var count = $('#item-files').children().length;
+          var tmplMarkup = $('#files-template').html();
+          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+          $('#item-files').append(compiledTmpl);
 
           // update form count
-          $getElementById('id_files-__prefix__-id').id = 'id_files-'+ count+'-id';
           $('#id_files-TOTAL_FORMS').attr('value', count+1);
       });
   });
+
 
   $(document).ready(function() {
     // when user clicks add more btn of variants
@@ -36,6 +36,8 @@
       });
   });
 </script>
+
+
 
 <form enctype="multipart/form-data" class="container" method="post" id="product_form" >
     {% csrf_token %}
@@ -74,29 +76,43 @@
     <!-- Note: here images is our ImageFormSet name, used in get_named_formsets function in views.py -->
 
 
-    {% with named_formsets.files as formset %}
-    {{ formset.management_form }}
+    {% with named_formsets.files as files_formset %}
+    {{ files_formset.management_form }}
+<!--    определим шаблон для inlineformset для добавления файлов, которые будем создавать через JS-->
+        <script type="text/html" id="files-template">    // id="inlineformsetname-template"
+                                                                    // id='inlineformsetname-__prefix__'
+            <tr id="file-__prefix__" class= hide_all>
+                {% for fields in files_formset.empty_form.hidden_fields %}
+                {{ fields }}
+                {% endfor %}
+
+                {% for fields in files_formset.empty_form.visible_fields %}
+                <td>{{fields}}</td>
+                {% endfor %}
+            </tr>
+        </script>
+
         <div class="table-responsive card mt-2">
             <div class="card-header card-header-secondary">
-                <h4 class="card-title">Добавить изделие</h4>
+                <h4 class="card-title">Добавить файлы</h4>
             </div>
-            <table class="table card-header">
+            <table id="file-table" class="table card-header">
                 <thead class="text-secondary">
                 <th>Название <span style="color: red;" class="required">*</span></th>
 
                 <th>Пометить для удаления</th>
                 <th>Удалить</th>
                 </thead>
-                <tbody id="item-ordered_files">  <!-- id="item-inlineformsetname" -->
+                <tbody id="item-files">  <!-- id="item-inlineformsetname" -->
                 <!-- formset non forms errors -->
-                {% for error in formset.non_form_errors %}
+                {% for error in files_formset.non_form_errors %}
                     <span style="color: red">{{ error }}</span>
                 {% endfor %}
 
-                {% for formss in formset %}
+                {% for formss in files_formset %}
                 {{ formss.management_form }}
 
-                    <tr id="ordered_files-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
+                    <tr id="file-{{ forloop.counter0 }}" class= hide_all>  <!-- id="inlineformsetname-counter" -->
                     {{ formss.id }}
                     {% for field in formss.visible_fields %}
                     <td>
@@ -125,7 +141,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-footer">
-                                        <a href="{% url 'crm:delete_product' formss.instance.pk %}" type="button" class="btn btn-primary">Да, удалить</a>
+                                        <a href="{% url 'crm:delete_file' formss.instance.pk %}" type="button" class="btn btn-primary">Да, удалить</a>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                     </div>
                                 </div>
@@ -145,7 +161,11 @@
 
 
             <div class="md-3">
-               <button id="add-files-button" hx-get="{% url 'crm:add_inline_form' forms_count=formset.total_form_count %}" hx-target="#item-ordered_files" hx-swap="beforeend">Добавить файлы заказа</button>
+<!--                чтобы работал HTMX и вывод шаблона надо в hx-get подставить url 'crm:add_inline_form' forms_count=files_formset.total_form_count -->
+<!--               <button id="add-files-button" hx-get="" hx-target="#item-ordered_files" hx-swap="beforeend">Добавить файлы заказа</button>-->
+                   <a href="#" id="add-files-button" class="btn btn-secondary add-files">Добавить файл</a> <!-- id="add-inlineformsetname-button" -->
+
+
             </div>
         </div>
 
@@ -160,17 +180,18 @@
     <!-- Note: here variants is our VariantFormSet name, used in get_named_formsets function in views.py -->
     {% with named_formsets.ordered_products as formset %}
     {{ formset.management_form }}
-        <script type="text/html" id="ordered_products-template">    // id="inlineformsetname-template"
-                                                                    // id='inlineformsetname-__prefix__'
-        <tr id="ordered_products-__prefix__" class= hide_all>
-            {% for fields in formset.empty_form.hidden_fields %}
-            {{ fields }}
-            {% endfor %}
+<!--        определим шаблон для inlineformset для добавления файлов, которые будем создавать через JS-->
+        <script type="text/html" id="ordered_products-template">
 
-            {% for fields in formset.empty_form.visible_fields %}
-            <td>{{fields}}</td>
-            {% endfor %}
-        </tr>
+            <tr id="ordered_products-__prefix__" class= hide_all>
+                {% for fields in formset.empty_form.hidden_fields %}
+                {{ fields }}
+                {% endfor %}
+
+                {% for fields in formset.empty_form.visible_fields %}
+                <td>{{fields}}</td>
+                {% endfor %}
+            </tr>
         </script>
         <div class="table-responsive card mt-2">
             <div class="card-header card-header-secondary">
@@ -232,7 +253,7 @@
                 </tbody>
             </table>
             <div class="md-3">
-                <a href="#" id="add-product-button" class="btn btn-secondary add-ordered_products">Добавить изделие</a> <!-- id="add-inlineformsetname-button" -->
+                <a href="#" id="add-product-button" class="btn btn-secondary">Добавить изделие</a> <!-- id="add-inlineformsetname-button" -->
             </div>
         </div>
 
@@ -240,9 +261,12 @@
     <!-- inline form for Products end -->
 
     <div class="form-group">
-         <button type="submit">Save Order</button>
+         <button class="btn btn-primary" type="submit">Сохранить</button>
 <!--        <button type="submit" class="btn btn-primary btn-block">Сохранить</button>-->
     </div>
 </form>
+
+
+
 
 {% endblock content %}

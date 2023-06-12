@@ -59,14 +59,14 @@ OrderedProductFormSet = inlineformset_factory(
     Order,
     OrderedProduct,
     form=OrderedProductForm,
-    extra=1
+    extra=0
 )
 
 OrderFileFormSet = inlineformset_factory(
     Order,
     OrderFile,
     form=OrderFileForm,
-    extra=1
+    extra=0
 
 )
 

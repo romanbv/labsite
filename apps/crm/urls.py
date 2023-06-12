@@ -25,9 +25,9 @@ urlpatterns = [
 
 
 
-    path('delete-image/<int:pk>/', delete_file, name='delete_file'),
-    path('delete-variant/<int:pk>/', delete_product, name='delete_product'),
-    path('orders/create/add_inline_form/<int:forms_count>', add_inline_form, name='add_inline_form'),
+    path('delete-file/<int:pk>/', delete_file, name='delete_file'),
+    path('delete-product/<int:pk>/', delete_product, name='delete_product'),
+    #path('orders/create/add_inline_form/<int:forms_count>', add_inline_form, name='add_inline_form'),
 
 
 
