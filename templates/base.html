@@ -10,7 +10,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-
+    <link href="https://use.fontawesome.com/releases/v6.4.0/css/all.css" rel="stylesheet" />
     <!-- Date Time Picker CSS -->
     <link rel="stylesheet" href="{% static 'date-time-phone/jquery-ui.css' %}">
     <link rel='stylesheet' href="{% static 'date-time-phone/jquery-ui-timepicker-addon.css' %}" />
@@ -54,13 +54,13 @@
       <!-- Nav Item - Заказы -->
       <li class="nav-item">
         <a class="nav-link" href="{% url 'crm:orders' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fa-solid fa-pen-to-square"></i>
           <span>Заказы</span></a>
       </li>
         <!-- Nav Item - Файлы -->
       <li class="nav-item">
         <a class="nav-link" href="#">
-          <i class="fas fa-fw fa-table"></i>
+          <i class="fa-solid fa-folder-open"></i>
           <span>Файлы</span></a>
       </li>
 
@@ -69,20 +69,22 @@
 
       <!-- Nav Item - Изделия -->
       <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-fw fa-table"></i>
+        <a class="nav-link" href="{% url 'crm:products' %}">
+          <i class="fa-solid fa-industry"></i>
           <span>Изделия</span></a>
       </li>
-       <!-- Nav Item - Контрагенты -->
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Контрагенты</span></a>
+
+      <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             <i class="fa-regular fa-copyright"></i>
+              <span> Компании</span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Link 1</a>
+              <a class="dropdown-item" href="#">Link 2</a>
+              <a class="dropdown-item" href="#">Link 3</a>
+          </div>
       </li>
-
-
-
-
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">

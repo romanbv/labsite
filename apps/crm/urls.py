@@ -20,6 +20,7 @@ urlpatterns = [
     path('company/pricelist_add', addPricelist.as_view(), name='pricelist_add'),
     path('company/pricelist_update/<int:pk>', updatePricelist.as_view(), name='pricelist_update'),
     path('company/product/<int:product_id>', showProduct.as_view(), name='product'),
+    path('company/products/', productsView.as_view(), name='products'),
     path('company/product_add', addProduct.as_view(), name='product_add'),
     path('company/product_update/<int:pk>', updateProduct.as_view(), name='product_update'),
 

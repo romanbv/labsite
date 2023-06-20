@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 
 import yadisk
@@ -32,6 +34,17 @@ class Company(models.Model):
     class Meta():
         verbose_name = "Компания"
         verbose_name_plural = "Компании"
+
+def check_company_for_user(sender, instance, **kwargs):
+    # Проверка, существует ли хотя бы одна Company с типом Компания для данного User
+    company_exists = sender.objects.filter(owner=instance.owner, type=1).exists()
+
+    # Если существует, отменяем сохранение
+    if company_exists:
+        raise ValidationError('Company for this user already exists')
+
+# Прикрепляем сигнал к модели Company
+pre_save.connect(check_company_for_user, sender=Company)
 
  #BEGIN ORDER#
 

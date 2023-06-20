@@ -251,20 +251,6 @@ class updateOrder(LoginRequiredMixin, UpdateView):
             context['ordered_products'] = OrderedProductFormSet(instance=order)
         return context
 
-    # def get_object(self):
-    #     return Order.objects.get(pk=self.kwargs['pk'])
-
-    # def get(self, request, *args, **kwargs):
-    #     return self.post(request, *args, **kwargs)
-
-    # def form_valid(self, form):
-    #     context = self.get_context_data()
-    #     ordered_products = context['ordered_products']
-    #     self.object = form.save()
-    #     if ordered_products.is_valid():
-    #         ordered_products.instance = self.object
-    #         ordered_products.save()
-    #     return super().form_valid(form)
 
     def post(self, request, *args, **kwargs):
         order = self.get_object()
@@ -395,9 +381,33 @@ class showProduct(LoginRequiredMixin, DataMixin, DetailView):
         #c_def = self.get_user_context(title=context['title'])
         return dict(list(context.items()) + list(c_def.items()))
 
+class productsView(LoginRequiredMixin, DataMixin, ListView):
+    login_url = '/login'
+    model = Product
+    template_name = 'crm/products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        return Product.objects.all()
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     return queryset.prefetch_related('ordered_product__order')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Изделия', 'url': reverse_lazy('crm:products')},
+        ]
+
+        return context
+
+
+
 class addProduct(LoginRequiredMixin, CreateView):
     form_class = ProductForm
-    template_name = 'crm/product-change.html'
+    template_name = 'crm/product-create-or-update.html'
     # success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')
     raise_exception = True
@@ -421,7 +431,7 @@ class updateProduct(LoginRequiredMixin, UpdateView):
     # fields = "__all__"
 
     form_class = ProductForm
-    template_name = 'crm/product-change.html'
+    template_name = 'crm/product-create-or-update.html'
     # success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')
     raise_exception = True
