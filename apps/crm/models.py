@@ -109,6 +109,9 @@ class Pricelist(models.Model):
         verbose_name = "Прайс"
         verbose_name_plural = "Прайсы"
 
+
+
+
 class ProductGroup(models.Model):
     name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
 
@@ -124,8 +127,8 @@ class Product(models.Model):
     name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
     code = models.CharField(max_length=10, blank=False, verbose_name="Код")
     group = models.ForeignKey(ProductGroup, verbose_name='Группа', on_delete=models.CASCADE)
-    pricelist = models.ForeignKey(Pricelist, verbose_name='Прайс', on_delete=models.CASCADE)
-    price = models.FloatField(null=True, blank=True, default=None, verbose_name="Цена")
+    company = models.ForeignKey(Company, verbose_name='Компания', on_delete=models.CASCADE)
+
     def __str__(self):
         return self.name
 
@@ -136,10 +139,25 @@ class Product(models.Model):
         verbose_name = "Изделие"
         verbose_name_plural = "Изделия"
 
+
+class ProductPrice(models.Model):
+    pricelist = models.ForeignKey(Pricelist, verbose_name='Прайс', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, verbose_name='Изделие', on_delete=models.CASCADE)
+    price = models.FloatField(null=True, blank=True, default=None, verbose_name="Стоимость")
+
+
+    class Meta():
+        verbose_name = "Стоимость изделий"
+        verbose_name_plural = "Стоимости изделий"
+
+
+
 class OrderedProduct(models.Model):
     order = models.ForeignKey(Order, verbose_name='Заказ', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name='Изделие', on_delete=models.CASCADE)
     amount = models.FloatField(null=True, blank=True, default=None, verbose_name="Количество")
 
-
+    class Meta():
+        verbose_name = "Заказанное изделие"
+        verbose_name_plural = "Заказанные изделия"
 
