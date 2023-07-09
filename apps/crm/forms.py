@@ -34,7 +34,7 @@ class OrderForm(forms.ModelForm):
     #     return order
 
 
-class OrderedProductForm(forms.ModelForm):
+class OrdersProductsForm(forms.ModelForm):
     class Meta:
         model = OrderedProduct
         fields = "__all__"
@@ -44,7 +44,7 @@ class OrderedProductForm(forms.ModelForm):
         'amount': forms.NumberInput(attrs={'class': 'form-control'}),
     }
 
-class OrderFileForm(forms.ModelForm):
+class OrdersFilesForm(forms.ModelForm):
     class Meta:
         model = OrderFile
         fields = ['file']
@@ -55,17 +55,17 @@ class OrderFileForm(forms.ModelForm):
     #number = forms.CharField(max_length=9, label='Номер')
     #company = forms.ModelChoiceField(queryset=Company.objects.all(),  label='Компания')
 
-OrderedProductFormSet = inlineformset_factory(
+OrdersProductsFormSet = inlineformset_factory(
     Order,
     OrderedProduct,
-    form=OrderedProductForm,
+    form=OrdersProductsForm,
     extra=0
 )
 
-OrderFileFormSet = inlineformset_factory(
+OrdersFilesFormSet = inlineformset_factory(
     Order,
     OrderFile,
-    form=OrderFileForm,
+    form=OrdersFilesForm,
     extra=0
 
 )
@@ -122,3 +122,27 @@ class PricelistForm(forms.ModelForm):
         widgets = {
             'number': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+class PricelistsProductsForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    widgets = {
+        'product': forms.Select(attrs={'class': 'form-control'}),
+        'price': forms.NumberInput(attrs={'class': 'form-control'}),
+    }
+
+    class Meta:
+        model = PricelistsProducts
+        fields = "__all__"
+
+
+
+PricelistsProductsFormSet = inlineformset_factory(
+    Pricelist,
+    PricelistsProducts,
+    form=PricelistsProductsForm,
+    extra=0
+
+)

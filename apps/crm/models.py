@@ -70,6 +70,42 @@ class Order(models.Model):
         verbose_name_plural = "Заказы"
 
 
+class ProductGroup(models.Model):
+    name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
+
+    def __str__(self):
+        return self.name
+
+    class Meta():
+        verbose_name = "Группа изделий"
+        verbose_name_plural = "Группы изделий"
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
+    code = models.CharField(max_length=10, blank=False, verbose_name="Код")
+    group = models.ForeignKey(ProductGroup, verbose_name='Группа', on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, verbose_name='Компания', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('crm:product', kwargs={'product_id': self.pk})
+
+    class Meta():
+        verbose_name = "Изделие"
+        verbose_name_plural = "Изделия"
+
+class OrderedProduct(models.Model):
+    order = models.ForeignKey(Order, verbose_name='Заказ', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, verbose_name='Изделие', on_delete=models.CASCADE)
+    amount = models.FloatField(null=True, blank=True, default=None, verbose_name="Количество")
+
+    class Meta():
+        verbose_name = "Заказанное изделие"
+        verbose_name_plural = "Заказанные изделия"
+
 class OrderFile(models.Model):
     name = models.CharField(max_length=255)
     file = models.FileField(upload_to='uploads/')
@@ -111,36 +147,7 @@ class Pricelist(models.Model):
 
 
 
-
-class ProductGroup(models.Model):
-    name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
-
-    def __str__(self):
-        return self.name
-
-    class Meta():
-        verbose_name = "Группа изделий"
-        verbose_name_plural = "Группы изделий"
-
-
-class Product(models.Model):
-    name = models.CharField(max_length=255, blank=False, verbose_name="Наименование")
-    code = models.CharField(max_length=10, blank=False, verbose_name="Код")
-    group = models.ForeignKey(ProductGroup, verbose_name='Группа', on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, verbose_name='Компания', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('crm:product', kwargs={'product_id': self.pk})
-
-    class Meta():
-        verbose_name = "Изделие"
-        verbose_name_plural = "Изделия"
-
-
-class ProductPrice(models.Model):
+class PricelistsProducts(models.Model):
     pricelist = models.ForeignKey(Pricelist, verbose_name='Прайс', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name='Изделие', on_delete=models.CASCADE)
     price = models.FloatField(null=True, blank=True, default=None, verbose_name="Стоимость")
@@ -152,12 +159,5 @@ class ProductPrice(models.Model):
 
 
 
-class OrderedProduct(models.Model):
-    order = models.ForeignKey(Order, verbose_name='Заказ', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, verbose_name='Изделие', on_delete=models.CASCADE)
-    amount = models.FloatField(null=True, blank=True, default=None, verbose_name="Количество")
 
-    class Meta():
-        verbose_name = "Заказанное изделие"
-        verbose_name_plural = "Заказанные изделия"
 

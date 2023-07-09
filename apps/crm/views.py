@@ -60,7 +60,6 @@ class OrderInline():
             file.owner = self.object.user
             file.save()
 
-
 class OrderCreate(OrderInline, CreateView):
 
     def get_initial(self):
@@ -70,105 +69,29 @@ class OrderCreate(OrderInline, CreateView):
         return initial
 
     def get_context_data(self, **kwargs):
-        ctx = super(OrderCreate, self).get_context_data(**kwargs)
-        ctx['named_formsets'] = self.get_named_formsets()
-        return ctx
+        context = super(OrderCreate, self).get_context_data(**kwargs)
+        context['named_formsets'] = self.get_named_formsets()
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
+
+        ]
+        return context
 
     def get_named_formsets(self):
         if self.request.method == "GET":
             return {
-                'ordered_products': OrderedProductFormSet(prefix='ordered_products'),
-                'files': OrderFileFormSet(prefix='files'),
+                'ordered_products': OrdersProductsFormSet(prefix='ordered_products'),
+                'files': OrdersFilesFormSet(prefix='files'),
             }
         else:
             return {
-                'ordered_products': OrderedProductFormSet(self.request.POST or None, self.request.FILES or None, prefix='ordered_products'),
-                'files': OrderFileFormSet(self.request.POST or None, self.request.FILES or None, prefix='files'),
+                'ordered_products': OrdersProductsFormSet(self.request.POST or None, self.request.FILES or None, prefix='ordered_products'),
+                'files': OrdersFilesFormSet(self.request.POST or None, self.request.FILES or None, prefix='files'),
             }
 
-def add_inline_form(request, forms_count):
-        context = {}
-        formset = OrderFileFormSet(prefix='files')
-        context["formset"] = formset
-        context["forms_count"] =  forms_count
-        return render(request, "crm/add-inline-form.html", context)
-
-
-
-class OrderUpdate(OrderInline, UpdateView):
-
-    def get_context_data(self, **kwargs):
-        ctx = super(OrderUpdate, self).get_context_data(**kwargs)
-        ctx['named_formsets'] = self.get_named_formsets()
-        return ctx
-
-    def get_named_formsets(self):
-        return {
-            'ordered_products': OrderedProductFormSet(self.request.POST or None, self.request.FILES or None, instance=self.object,
-                                       prefix='ordered_products'),
-            'files': OrderFileFormSet(self.request.POST or None, self.request.FILES or None, instance=self.object,
-                                   prefix='files'),
-        }
-
-
-def delete_file(request, pk):
-
-    try:
-        file = OrderFile.objects.get(id=pk)
-        order = file.order
-    except OrderFile.DoesNotExist:
-        messages.success(
-            request, 'Файл не найден'
-        )
-        return redirect('crm:order_update', pk=order.id )
-
-    file.delete()
-    messages.success(
-        request, 'Файл заказа успешно удален'
-    )
-    return redirect('crm:order_update', pk=order.id)
-
-
-def delete_product(request, pk):
-    try:
-        product = OrderedProduct.objects.get(id=pk)
-    except OrderedProduct.DoesNotExist:
-        messages.success(
-            request, 'Изделие в заказе не найдено'
-        )
-        return redirect('crm:order_update', pk=product.order.id)
-
-    product.delete()
-    messages.success(
-        request, 'Изделие заказа успешно удалено'
-    )
-    return redirect('crm:order_update', pk=product.order.id)
-
-
-class ordersView(LoginRequiredMixin, DataMixin, ListView):
-    login_url = '/login'
-    model = Order
-    template_name = 'crm/orders.html'
-    context_object_name = 'orders'
-
-    def get_queryset(self):
-        return Order.objects.filter(user = self.request.user.id)
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     return queryset.prefetch_related('ordered_product__order')
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['breadcrumbs'] = [
-            {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
-
-        ]
-
-        return context
-
-class showOrder(LoginRequiredMixin, DataMixin, DetailView):
+class OrderShow(LoginRequiredMixin, DataMixin, DetailView):
     login_url = '/login'
     model = Order
     template_name = 'crm/order.html'
@@ -195,84 +118,119 @@ class showOrder(LoginRequiredMixin, DataMixin, DetailView):
         #c_def = self.get_user_context(title=context['title'])
         return dict(list(context.items()) + list(c_def.items()))
 
-
-
-class OrderCreateView(CreateView):
-    model = Order
-    form_class = OrderForm
-    template_name = 'crm/order-add.html'
-    success_url = reverse_lazy('crm:orders')
+class OrderUpdate(OrderInline, UpdateView):
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['product_formset'] = OrderedProductFormSet()
-        if self.request.POST:
-            context['product_formset'] = OrderedProductFormSet(self.request.POST)
-        else:
-            context['product_formset'] = OrderedProductFormSet()
-        return context
-
-    def form_valid(self, form):
-        context = self.get_context_data()
-        product_formset = context['product_formset']
-        if product_formset.is_valid():
-            self.object = form.save()
-            product_formset.instance = self.object
-            product_formset.save()
-            return super().form_valid(form)
-        else:
-            return self.form_invalid(form)
-
-
-
-class updateOrder(LoginRequiredMixin, UpdateView):
-    model = Order
-    # fields = "__all__"
-
-    form_class = OrderForm
-    template_name = 'crm/order-update.html'
-    # success_url = reverse_lazy('orders:order')
-    login_url = reverse_lazy('home')
-    raise_exception = True
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-
-        context = super().get_context_data(**kwargs)
-        order = self.object
+        order = self.get_object()
+        context = super(OrderUpdate, self).get_context_data(**kwargs)
+        context['named_formsets'] = self.get_named_formsets()
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
+            {'title': 'Компании', 'url': "crm:companies"},
+            {'title': 'Заказы', 'url': "crm:orders"},
             {'title': order.pk, 'url': ""},
         ]
 
-        if self.request.POST:
-            context['ordered_products'] = OrderedProductFormSet(self.request.POST, instance=order)
-        else:
-            context['ordered_products'] = OrderedProductFormSet(instance=order)
         return context
 
+    def get_named_formsets(self):
+        return {
+            'ordered_products': OrdersProductsFormSet(self.request.POST or None, self.request.FILES or None, instance=self.object,
+                                       prefix='ordered_products'),
+            'files': OrdersFilesFormSet(self.request.POST or None, self.request.FILES or None, instance=self.object,
+                                   prefix='files'),
+        }
 
-    def post(self, request, *args, **kwargs):
-        order = self.get_object()
-        formset = OrderedProductFormSet(request.POST, request.FILES, instance=order)
+class OrdersListView(LoginRequiredMixin, DataMixin, ListView):
+    login_url = '/login'
+    model = Order
+    template_name = 'crm/orders.html'
+    context_object_name = 'orders'
 
-        if formset.is_valid():
-            order.save()
-            formset.save()
+    def get_queryset(self):
+        return Order.objects.filter(user = self.request.user.id)
 
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     return queryset.prefetch_related('ordered_product__order')
 
-        if 'delete_ordered_product' in request.POST:
-            ordered_product_id = request.POST['delete_ordered_product']
-            ordered_product = OrderedProduct.objects.get(id=ordered_product_id)
-            ordered_product.delete()
-            return redirect('crm:order_update', pk=order.pk)
-        return super().post(request, *args, **kwargs)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Заказы', 'url': reverse_lazy('crm:orders')},
+
+        ]
+
+        return context
+
+def add_inline_form(request, forms_count):
+        context = {}
+        formset = OrdersFilesFormSet(prefix='files')
+        context["formset"] = formset
+        context["forms_count"] =  forms_count
+        return render(request, "crm/add-inline-form.html", context)
+
+def delete_file(request, pk):
+
+    try:
+        file = OrderFile.objects.get(id=pk)
+        order = file.order
+    except OrderFile.DoesNotExist:
+        messages.success(
+            request, 'Файл не найден'
+        )
+        return redirect('crm:order_update', pk=order.id )
+
+    file.delete()
+    messages.success(
+        request, 'Файл заказа успешно удален'
+    )
+    return redirect('crm:order_update', pk=order.id)
+
+def delete_product(request, pk):
+    try:
+        product = OrderedProduct.objects.get(id=pk)
+    except OrderedProduct.DoesNotExist:
+        messages.success(
+            request, 'Изделие в заказе не найдено'
+        )
+        return redirect('crm:order_update', pk=product.order.id)
+
+    product.delete()
+    messages.success(
+        request, 'Изделие заказа успешно удалено'
+    )
+    return redirect('crm:order_update', pk=product.order.id)
+
 
 #END ORDER#
 
 
 #START COMPANY#
-class showCompany(LoginRequiredMixin, DataMixin, DetailView):
+class CompanyCreate(LoginRequiredMixin, CreateView):
+    form_class = CompanyForm
+    template_name = 'crm/company_create_or_update.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+
+        ]
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+class CompanyShow(LoginRequiredMixin, DataMixin, DetailView):
     login_url = '/login'
     model = Company
     template_name = 'crm/company.html'
@@ -296,40 +254,19 @@ class showCompany(LoginRequiredMixin, DataMixin, DetailView):
         context['pricelists'] = pricelists
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Компания', 'url': ""},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
             {'title': company.pk, 'url': ""},
         ]
         c_def = self.get_user_context()
         #c_def = self.get_user_context(title=context['title'])
         return dict(list(context.items()) + list(c_def.items()))
 
-class addCompany(LoginRequiredMixin, CreateView):
-    form_class = CompanyForm
-    template_name = 'crm/company-add.html'
-    # success_url = reverse_lazy('orders:order')
-    login_url = reverse_lazy('home')
-    raise_exception = True
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['breadcrumbs'] = [
-            {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Компания', 'url': ""},
-
-        ]
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-class updateCompany(LoginRequiredMixin, UpdateView):
+class CompanyUpdate(LoginRequiredMixin, UpdateView):
     model = Company
     # fields = "__all__"
 
     form_class = CompanyForm
-    template_name = 'crm/company-update.html'
+    template_name = 'crm/company_create_or_update.html'
     # success_url = reverse_lazy('orders:order')
     login_url = reverse_lazy('home')
     raise_exception = True
@@ -340,7 +277,7 @@ class updateCompany(LoginRequiredMixin, UpdateView):
         company = self.get_object()
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Компания', 'url': ""},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
             {'title': company.pk, 'url': ""},
         ]
 
@@ -348,11 +285,57 @@ class updateCompany(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 
+class CompaniesListView(LoginRequiredMixin, DataMixin, ListView):
+    login_url = '/login'
+    model = Pricelist
+    template_name = 'crm/companies.html'
+    context_object_name = 'companies'
+
+    def get_queryset(self):
+        return Company.objects.filter(owner=self.request.user.id)
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     return queryset.prefetch_related('ordered_product__order')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+
+        ]
+
+        return context
+
+
 #END COMPANY VIEWS#
 
 
 #START PRODUCT VIEW#
-class showProduct(LoginRequiredMixin, DataMixin, DetailView):
+class ProductCreate(LoginRequiredMixin, CreateView):
+    form_class = ProductForm
+    template_name = 'crm/product-create-or-update.html'
+    # success_url = reverse_lazy('orders:order')
+    login_url = reverse_lazy('home')
+    raise_exception = True
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Изделия', 'url': reverse_lazy('crm:products')},
+
+        ]
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+class ProductShow(LoginRequiredMixin, DataMixin, DetailView):
     login_url = '/login'
     model = Company
     template_name = 'crm/product.html'
@@ -374,59 +357,15 @@ class showProduct(LoginRequiredMixin, DataMixin, DetailView):
 
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Изделие', 'url': ""},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Изделия', 'url': reverse_lazy('crm:products')},
             {'title': product.pk, 'url': ""},
         ]
         c_def = self.get_user_context()
         #c_def = self.get_user_context(title=context['title'])
         return dict(list(context.items()) + list(c_def.items()))
 
-class productsView(LoginRequiredMixin, DataMixin, ListView):
-    login_url = '/login'
-    model = Product
-    template_name = 'crm/products.html'
-    context_object_name = 'products'
-
-    def get_queryset(self):
-        return Product.objects.all()
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     return queryset.prefetch_related('ordered_product__order')
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['breadcrumbs'] = [
-            {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Изделия', 'url': reverse_lazy('crm:products')},
-        ]
-
-        return context
-
-
-
-class addProduct(LoginRequiredMixin, CreateView):
-    form_class = ProductForm
-    template_name = 'crm/product-create-or-update.html'
-    # success_url = reverse_lazy('orders:order')
-    login_url = reverse_lazy('home')
-    raise_exception = True
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['breadcrumbs'] = [
-            {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Изделие', 'url': ""},
-
-        ]
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-class updateProduct(LoginRequiredMixin, UpdateView):
+class ProductUpdate(LoginRequiredMixin, UpdateView):
     model = Product
     # fields = "__all__"
 
@@ -450,13 +389,104 @@ class updateProduct(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 
+class ProductsListView(LoginRequiredMixin, DataMixin, ListView):
+    login_url = '/login'
+    model = Product
+    template_name = 'crm/products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        return Product.objects.all()
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     return queryset.prefetch_related('ordered_product__order')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Изделия', 'url': reverse_lazy('crm:products')},
+        ]
+
+        return context
+
 #END PRODUCT VIEW#
 
 
 
 
 #START PRICELIST VIEW#
-class priceListView(LoginRequiredMixin, DataMixin, DetailView):
+
+class PricelistInline():
+    form_class = PricelistForm
+    model = Pricelist
+    template_name = "crm/pricelist_create_or_update.html"
+
+    def form_valid(self, form):
+        named_formsets = self.get_named_formsets()
+        if not all((x.is_valid() for x in named_formsets.values())):
+            return self.render_to_response(self.get_context_data(form=form))
+
+        self.object = form.save()
+
+        # for every formset, attempt to find a specific formset save function
+        # otherwise, just save.
+        for name, formset in named_formsets.items():
+            formset_save_func = getattr(self, 'formset_{0}_valid'.format(name), None)
+            if formset_save_func is not None:
+                formset_save_func(formset)
+            else:
+                formset.save()
+        return redirect('crm:pricelist', pricelist_id=self.object.pk )
+
+    def formset_pricelists_products_valid(self, formset):
+        """
+        Hook for custom formset saving.. useful if you have multiple formsets
+        """
+        products = formset.save(commit=False)  # self.save_formset(formset, contact)
+        # add this, if you have can_delete=True parameter set in inlineformset_factory func
+        for obj in formset.deleted_objects:
+            obj.delete()
+        for variant in products:
+            variant.pricelist = self.object
+            variant.save()
+
+class PricelistCreate(PricelistInline, CreateView):
+
+    def get_initial(self):
+        initial = super().get_initial()
+        company = Company.objects.get(id=1)  # Получение значения из модели
+        initial['company'] = company
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(PricelistCreate, self).get_context_data(**kwargs)
+        context['named_formsets'] = self.get_named_formsets()
+        context['breadcrumbs'] = [
+            {'title': 'Главная', 'url': reverse_lazy('home')},
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Прайслисты', 'url': reverse_lazy('crm:pricelists')},
+
+        ]
+
+        return context
+
+
+    def get_named_formsets(self):
+        if self.request.method == "GET":
+            return {
+                'pricelists_products': PricelistsProductsFormSet(prefix='pricelists_products'),
+
+            }
+        else:
+            return {
+                'pricelists_products': PricelistsProductsFormSet(self.request.POST or None, self.request.FILES or None, prefix='pricelists_products'),
+
+            }
+
+class PricelistShow(LoginRequiredMixin, DataMixin, DetailView):
     login_url = '/login'
     model = Pricelist
     template_name = 'crm/pricelist.html'
@@ -467,67 +497,67 @@ class priceListView(LoginRequiredMixin, DataMixin, DetailView):
 
         try:
             a_obj = Pricelist.objects.get(pk=num)
-        except Company.DoesNotExist:
+        except Pricelist.DoesNotExist:
             a_obj = None
         return a_obj
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         pricelist = self.get_object()
-        products = Product.objects.filter(pricelist=pricelist.id)
+        products = PricelistsProducts.objects.filter(pricelist=pricelist.id)
         context['products'] = products
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Прайс', 'url': ""},
+            {'title': 'Прайслисты', 'url': reverse_lazy('crm:pricelists')},
             {'title':   pricelist.pk, 'url':""},
 
         ]
 
         return context
 
-class addPricelist(LoginRequiredMixin, CreateView):
-    form_class = PricelistForm
-    template_name = 'crm/pricelist-change.html'
-    # success_url = reverse_lazy('orders:order')
-    login_url = reverse_lazy('home')
-    raise_exception = True
+class PricelistUpdate(PricelistInline, UpdateView):
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-
+    def get_context_data(self, **kwargs):
+        pricelist = self.get_object()
+        context = super(PricelistUpdate, self).get_context_data(**kwargs)
+        context['named_formsets'] = self.get_named_formsets()
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Прайс', 'url': ""},
-
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Прайслисты', 'url': ""},
+            {'title': pricelist.pk, 'url': ""},
         ]
 
         return context
 
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
 
-class updatePricelist(LoginRequiredMixin, UpdateView):
+    def get_named_formsets(self):
+        return {
+            'pricelists_products': PricelistsProductsFormSet(self.request.POST or None, self.request.FILES or None, instance=self.object,
+                                       prefix='pricelists_products'),
+
+        }
+
+class PricelistsListView(LoginRequiredMixin, DataMixin, ListView):
+    login_url = '/login'
     model = Pricelist
-    # fields = "__all__"
+    template_name = 'crm/pricelists.html'
+    context_object_name = 'pricelists'
 
-    form_class = PricelistForm
-    template_name = 'crm/pricelist-change.html'
-    # success_url = reverse_lazy('orders:order')
-    login_url = reverse_lazy('home')
-    raise_exception = True
+    def get_queryset(self):
+        return Pricelist.objects.filter(company__owner=self.request.user.id)
+
 
     def get_context_data(self, *, object_list=None, **kwargs):
-
         context = super().get_context_data(**kwargs)
-        price = self.get_object()
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
-            {'title': 'Прайс', 'url': ""},
-            {'title': price.pk, 'url': ""},
-        ]
+            {'title': 'Компании', 'url': reverse_lazy('crm:companies')},
+            {'title': 'Прайслисты', 'url': reverse_lazy('crm:pricelists')},
 
+
+        ]
         return context
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
+
 
 #END PRICELIST VIEW#

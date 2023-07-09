@@ -27,10 +27,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     login_url = reverse_lazy('home')
 
     def get_context_data(self, **kwargs):
-        userCompanies = Company.objects.filter(owner=self.request.user.id)
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['companies'] = userCompanies
+        user_companies = Company.objects.filter(owner=self.request.user.id)
+        context['companies'] = user_companies
         context['breadcrumbs'] = [
             {'title': 'Главная', 'url': reverse_lazy('home')},
 

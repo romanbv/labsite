@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
+            <h1 class="h3 mb-0 text-gray-800">Компании</h1>
+        </div>          
+
+        <!-- Main Content Here -->
+          <div class="row">
+          {% for company in companies %}
+            <!-- Company Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                  <div class="row no-gutters align-items-center">
+                      <div class="card-body">
+                          <div class="row no-gutters align-items-center">
+                              <div class="col mr-2">
+                                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><a  href="{% url 'crm:company' company.id %}">{{company}}</a></div>
+
+
+                                  <p>Город: {{company.city}}</p>
+                                  <p>Владелец: {{company.owner}}</p>
+                                  <p>Тип: {{company.type}}</p>
+                              </div>
+                              <div class="col-auto">
+                                  <i class="fas fa-home fa-2x text-gray-300"></i>
+                              </div>
+                          </div>
+                          <div class="row no-gutters align-items-center">
+                              <div class="button mt-2 d-flex flex-row align-items-center">
+                                  <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:order_create' %}'">Создать заказ</button>
+                              </div>
+                              <div class="button mt-2 d-flex flex-row align-items-center">
+                                  <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:product_create' %}'">Создать изделие</button>
+                              </div>
+                              <div class="button mt-2 d-flex flex-row align-items-center">
+                                  <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:pricelist_create' %}'">Создать прайс</button>
+                              </div>
+                          </div>
+                      </div>
+
+
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+    </div>
+    <div class="button mt-2 d-flex flex-row align-items-center">
+    <button class="btn btn-sm btn-outline-primary w-10" onclick="location.href='{% url 'crm:company_create' %}'">Создать компанию</button>
+    </div>
+  </div>
+    <!-- /.container-fluid -->
+{% endblock content %}

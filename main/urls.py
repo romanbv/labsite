@@ -6,6 +6,9 @@ from django.contrib.auth import views as auth_views
 from apps.common.views import *
 from apps.userprofiles.views import *
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 
 urlpatterns = [
@@ -70,7 +73,7 @@ urlpatterns = [
     path('profile/', include('apps.userprofiles.urls', namespace='userprofiles')),
     #path('oauth/', include('social_django.urls', namespace='social')),  # <-- here
 
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 from django.conf import settings
 from django.conf.urls.static import static

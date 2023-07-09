@@ -8,7 +8,14 @@
 
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-        <h1 class="h3 mb-0 text-gray-800">Изменение заказа</h1>
+         <div class="card-header card-header-secondary">
+                        {% if company.id %}
+                        <h1 class="card-title">Изменить компанию</h1>
+                        {% else%}
+                        <h1 class="card-title">Создать компанию</h1>
+                        {% endif %}
+                    </div>
+        </div>
         </div>          
 
         <!-- Main Content Here -->
@@ -19,25 +26,12 @@
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Данные заказа:</h1>
+                    <h1 class="h4 text-gray-900 mb-4">Компания:</h1>
                   </div>
                   <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{form | crispy}}
-                    <table id="products">
-                        {{ product_formset.management_form }}
 
-                    {% for product_form in ordered_products %}
-                      <tr>
-                        <td>{{ product_form.product.label_tag }}</td>
-                        <td>{{ product_form.product }}</td>
-                        <td>{{ product_form.amount.label_tag }}</td>
-                        <td>{{ product_form.amount }}</td>
-
-                        <td><button type="submit" name="delete_ordered_product" value="{{product_form.id.value}}">Удалить</button></td>
-                      </tr>
-                    {% endfor %}
-                  </table>
                     <button type="submit" class="btn btn-success btn-block">Изменить</button>
                   </form>
                   <hr>

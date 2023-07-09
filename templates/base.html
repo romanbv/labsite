@@ -67,25 +67,38 @@
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
-      <!-- Nav Item - Изделия -->
+
+     <!-- Nav Item - Компании -->
+      <li class="nav-item dropdown">
+          <a class="nav-link" href="{% url 'crm:companies' %}">
+          <i class="fa-solid fa-cubes"></i>
+          <span>Компании</span></a>
+
+<!--          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--             <i class="fa-regular fa-copyright"></i>-->
+<!--              <span> Компании</span>-->
+<!--          </a>-->
+
+<!--          <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+<!--               {% for company in companies %}-->
+<!--              <a class="dropdown-item" href="{% url 'crm:company' company.id %}">{{company}}</a>-->
+<!--              {% endfor %}-->
+<!--           </div>-->
+
+      </li>
+        <!-- Nav Item - Изделия -->
       <li class="nav-item">
         <a class="nav-link" href="{% url 'crm:products' %}">
           <i class="fa-solid fa-industry"></i>
           <span>Изделия</span></a>
       </li>
 
-      <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             <i class="fa-regular fa-copyright"></i>
-              <span> Компании</span>
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Link 1</a>
-              <a class="dropdown-item" href="#">Link 2</a>
-              <a class="dropdown-item" href="#">Link 3</a>
-          </div>
+         <!-- Nav Item - Прайсы -->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'crm:pricelists' %}">
+          <i class="fa-solid fa-columns"></i>
+          <span>Прайсы</span></a>
       </li>
-
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 

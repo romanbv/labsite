@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+pricelist.html{% extends 'base.html' %}
 {% load static %}
 {% block content %}
    <!-- Begin Page Content -->
@@ -72,7 +72,7 @@
                       {% endfor%}
                     </div>
                     <div class="button mt-2 d-flex flex-row align-items-center">
-                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:product_add' %}'">Добавить изделие</button>
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:product_create' %}'">Добавить изделие</button>
                     </div>
                   </div>
                 </div>

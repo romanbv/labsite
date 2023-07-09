@@ -12,18 +12,20 @@
         <!-- Main Content Here -->
           <div class="row">
 
-            <!-- Company Card Example -->
+            <!-- Company Card -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Компании</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><a  href="{% url 'crm:companies' %}">Ваши компании</a></div>
                       {% for company in companies %}
-                        <a  href="{% url 'crm:company' company.id %}">{{company}}</a>
+                        <div>
+                          <a  href="{% url 'crm:company' company.id %}">{{company}}</a>
+                        </div>
                       {% endfor %}
                       <div class="button mt-2 d-flex flex-row align-items-center">
-                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:company_add' %}'">Создать компанию</button>
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:company_create' %}'">Создать компанию</button>
                     </div>
                     </div>
                     <div class="col-auto">
@@ -34,13 +36,13 @@
               </div>
             </div>
 
-            <!-- Contact Card Example -->
+            <!-- Orders Card -->
             <div class="col-xl-3 col-md-6 mb-4">
               <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"> <a  href="{% url 'crm:orders' %}">Заказы</a></div>
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1"> <a  href="{% url 'crm:orders' %}">Ваши заказы</a></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">18,002</div>
                        <div class="button mt-2 d-flex flex-row align-items-center">
                          <button class="btn btn-sm btn-outline-primary w-100" onclick="location.href='{% url 'crm:order_create' %}'">Создать заказ</button>
@@ -55,7 +57,7 @@
             </div>
           </div>
         
-        
+
         
     </div>
     <!-- /.container-fluid -->
